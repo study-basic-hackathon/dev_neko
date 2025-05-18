@@ -1,0 +1,50 @@
+volumes:
+  db-store:
+
+services:
+  node:
+    build:
+      context: .
+      dockerfile: ./infra/node/Dockerfile
+      args:
+        UID: ${UID:-1000}
+        GID: ${GID:-1000}
+    ports:
+      - target: 3000
+        published: ${NODE_PUBLISHED_PORT:-3000}
+        protocol: tcp
+        mode: host
+    volumes:
+      - type: bind
+        source: ./code
+        target: /code
+    tty: true
+
+  db:
+    build:
+      context: .
+      dockerfile: ./infra/mysql/Dockerfile
+    ports:
+      - target: 3306
+        published: ${DB_PUBLISHED_PORT:-3306}
+        protocol: tcp
+        mode: host
+    volumes:
+      - type: volume
+        source: db-store
+        target: /var/lib/mysql
+        volume:
+          nocopy: true
+    environment:
+      - MYSQL_DATABASE=${DB_DATABASE:-dev_neko}
+      - MYSQL_USER=${DB_USERNAME:-noder}
+      - MYSQL_PASSWORD=${DB_PASSWORD:-secret}
+      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD:-secret}
+
+  # mailpit:
+  #   image: axllent/mailpit
+  #   ports:
+  #     - target: 8025
+  #       published: ${MAILPIT_PUBLISHED_PORT:-8025}
+  #       protocol: tcp
+  #       mode: host
