@@ -2,15 +2,22 @@
 
 docker compose build
 
+docker compose up -d
+
+docker compose exec node npm install
+
 # いつもする立ち上げコマンド
 
 仮想環境立ち上げ
+
 docker compose up -d
 
 npm run devするために中に入る
+
 docker compose exec node bash
 
 npm run devする
+
 npm run dev
 
 →開発サーバーが立ち上がる
