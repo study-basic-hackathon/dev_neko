@@ -1,0 +1,31 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap");
+@import "tailwindcss";
+
+@theme {
+  --color-primary-500: #4f378b;
+  --color-text-black: #1d192b;
+  --color-gray-100: #f7f7f7;
+  --color-gray-200: #eeeeee;
+  --color-gray-300: #cac4d0;
+  --color-gray-400: #79747e;
+  --color-gray-500: #4a4458;
+
+  --font-family-sans: "Noto Sans JP", ui-sans-serif, system-ui, sans-serif;
+}
+
+body {
+  @apply bg-gray-100 text-text-black;
+  font-family: var(--font-family-sans);
+}
+
+.btn-primary {
+  @apply bg-primary-500 text-white px-4 py-2 rounded-lg hover:opacity-90 transition-opacity;
+}
+
+.input-field {
+  @apply w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500;
+}
+
+.card {
+  @apply bg-white rounded-lg shadow-md p-6;
+}

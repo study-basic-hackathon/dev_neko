@@ -1,8 +1,8 @@
-export default function Login() {
+export default function Signup() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-white relative">
       <div className="w-full max-w-md mx-auto p-8 bg-white rounded-lg shadow-md flex flex-col items-center">
-        <h2 className="text-2xl font-bold mb-6">ログイン</h2>
+        <h2 className="text-2xl font-bold mb-6">アカウントを作成</h2>
         <form className="w-full space-y-4">
           <input
             className="input-field"
@@ -15,7 +15,7 @@ export default function Login() {
             placeholder="password"
           />
           <button className="btn-primary w-full" type="submit">
-            ログイン
+            サインアップ
           </button>
         </form>
         <div className="w-full flex items-center my-4">
@@ -29,12 +29,17 @@ export default function Login() {
         >
           <span className="mr-2">G</span> Githubで作成
         </button>
-        <button
-          className="w-full bg-gray-200 text-gray-500 py-2 rounded-lg"
-          type="button"
-        >
-          アカウント作成 <span className="ml-1">&gt;</span>
-        </button>
+        <p className="text-xs text-gray-400 mt-2">
+          続行をクリックすると、
+          <a href="/terms" className="underline">
+            利用規約
+          </a>{" "}
+          と{" "}
+          <a href="/privacy" className="underline">
+            プライバシーポリシー
+          </a>{" "}
+          に同意したことになります。
+        </p>
       </div>
       <div className="absolute bottom-8 right-8">
         <span className="text-[120px] text-gray-400">🐱</span>
