@@ -56,13 +56,13 @@ export default function Receipts() {
                       <span className="w-3 h-3 bg-yellow-400 rounded-full mr-2"></span>
                       <span className="font-bold">食費</span>
                     </div>
-                    <div className="flex items-center text-gray-600 mb-6">
+                    <div className="flex items-center text-gray-600 mb-2">
                       <span className="w-2 h-2 bg-gray-400 rounded-full mr-2"></span>
                       <span>〇〇スーパー</span>
                     </div>
 
-                    <div className="space-y-4">
-                      <div className="flex justify-between items-center py-3 border-b border-gray-100">
+                    <div className="">
+                      <div className="flex justify-between items-center py-4 border-b-1 border-solid border-lavender-light">
                         <div>
                           <div className="font-medium">スポーツドリンク</div>
                           <div className="text-sm text-gray-500">
@@ -71,7 +71,7 @@ export default function Receipts() {
                         </div>
                         <div className="font-medium">240円</div>
                       </div>
-                      <div className="flex justify-between items-center py-3 border-b border-gray-100">
+                      <div className="flex justify-between items-center py-4 border-b-1 border-solid border-lavender-light">
                         <div>
                           <div className="font-medium">ハンバーガー</div>
                           <div className="text-sm text-gray-500">
@@ -80,7 +80,7 @@ export default function Receipts() {
                         </div>
                         <div className="font-medium">300円</div>
                       </div>
-                      <div className="flex justify-between items-center py-3 border-b border-gray-100">
+                      <div className="flex justify-between items-center py-4 border-b-1 border-solid border-lavender-light">
                         <div>
                           <div className="font-medium">ハンバーガー</div>
                           <div className="text-sm text-gray-500">
@@ -105,27 +105,52 @@ export default function Receipts() {
                   </div>
                 </>
               ) : (
-                <form className="space-y-4">
-                  <div className="flex gap-2">
+                <form className="space-y-6">
+                  <div className="">
+                    <div className="flex items-center mb-4">
+                      <span className="w-3 h-3 bg-yellow-400 rounded-full mr-2"></span>
+                      <input className="input-field" defaultValue="食費" />
+                    </div>
+                    <div className="flex items-center text-gray-600 mb-2">
+                      <span className="w-2 h-2 bg-gray-400 rounded-full mr-2"></span>
+                      <input
+                        className="input-field"
+                        defaultValue="〇〇スーパー"
+                      />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
                     <input
                       className="input-field"
                       defaultValue="スポーツドリンク"
                     />
                     <input className="input-field" defaultValue="240円" />
+                    <input
+                      className="input-field col-span-2"
+                      defaultValue="〇〇コンビニ"
+                    />
                   </div>
-                  <div className="flex gap-2">
+                  <div className="grid grid-cols-2 gap-2">
                     <input
                       className="input-field"
                       defaultValue="ハンバーガー"
                     />
                     <input className="input-field" defaultValue="300円" />
+                    <input
+                      className="input-field col-span-2"
+                      defaultValue="〇〇ファストフード"
+                    />
                   </div>
-                  <div className="flex gap-2">
+                  <div className="grid grid-cols-2 gap-2">
                     <input
                       className="input-field"
                       defaultValue="ハンバーガー"
                     />
                     <input className="input-field" defaultValue="300円" />
+                    <input
+                      className="input-field col-span-2"
+                      defaultValue="〇〇ファストフード"
+                    />
                   </div>
                   <div className="flex gap-4 mt-8">
                     <button
