@@ -190,11 +190,11 @@ export default function Receipts() {
             </div>
           ) : isCameraActive ? (
             <div className="w-full flex flex-col items-center">
-              <div className="relative w-full max-w-[350px]">
+              <div className="relative w-full">
                 {/* カメラビューのコンテナ */}
                 <div className="relative">
                   {/* カメラ映像 */}
-                  <div className="w-full h-[600px] border-8 border-gray-800 rounded-lg overflow-hidden bg-black shadow-2xl">
+                  <div className="w-full border-8 border-gray-800 rounded-lg overflow-hidden bg-black shadow-2xl">
                     <video
                       ref={videoRef}
                       autoPlay
@@ -243,7 +243,7 @@ export default function Receipts() {
               </div>
 
               {/* ヘルプテキスト */}
-              <p className="text-sm text-gray-500 mt-6 text-center max-w-[350px]">
+              <p className="text-sm text-gray-500 mt-6 text-center">
                 カメラ映像が表示されない場合は、ブラウザのカメラ許可を確認してください
               </p>
             </div>
@@ -265,7 +265,7 @@ export default function Receipts() {
             <>
               <div className="w-full flex flex-col items-center">
                 <div
-                  className="max-w-[350px] h-[600px] bg-gray-100 rounded-lg flex items-center justify-center mb-6 border-4 border-gray-300 cursor-pointer"
+                  className=" bg-gray-100 rounded-lg flex items-center justify-center mb-6 border-4 border-gray-300 cursor-pointer"
                   onClick={handleImageClick}
                 >
                   {capturedImage ? (
@@ -286,6 +286,8 @@ export default function Receipts() {
                   onClick={() => {
                     setHasImage(false);
                     setCapturedImage(null);
+                    // 直接カメラを起動
+                    startCamera();
                   }}
                 >
                   レシートを撮り直す
