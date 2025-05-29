@@ -6,7 +6,7 @@ export default function Home() {
       {/* Cat Section */}
       <div className="bg-lavender-light py-16 px-8">
         <div className="max-w-4xl mx-auto flex flex-col items-center">
-          <div className="flex items-start gap-8 mb-8">
+          <div className="flex items-center gap-8">
             <div
               className="cat-silhouette"
               style={{ width: "200px", height: "200px" }}
@@ -21,10 +21,10 @@ export default function Home() {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 bg-white py-12 px-8">
-        <div className="max-w-4xl mx-auto space-y-12">
+      <div className="flex-1 bg-white pt-12 px-8 py-18">
+        <div className="max-w-4xl mx-auto">
           {/* Summary Section */}
-          <div className="text-center">
+          <div className="max-w-2xl mx-auto text-center">
             <h2 className="text-2xl font-bold mb-8">家計簿サマリー</h2>
 
             {/* Month Navigation */}
@@ -35,7 +35,7 @@ export default function Home() {
             </div>
 
             {/* Chart and Legend */}
-            <div className="flex flex-col items-center mb-8">
+            <div className="flex items-center gap-8 mb-8">
               <div className="w-48 h-48 bg-gray-100 rounded-full flex items-center justify-center mb-6 relative">
                 <div className="text-center">
                   <div className="text-sm text-gray-500">2025年 5月</div>
@@ -43,29 +43,29 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-x-8 gap-y-2 text-sm">
-                <div className="flex items-center justify-between">
+              <div className="flex flex-col text-sm flex-auto">
+                <div className="flex items-center justify-between border-b-1 border-solid border-lavender-light py-4">
                   <span className="flex items-center">
                     <span className="w-3 h-3 bg-blue-500 rounded-full mr-2"></span>
                     家賃
                   </span>
                   <span>2.3K</span>
                 </div>
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between border-b-1 border-solid border-lavender-light py-4">
                   <span className="flex items-center">
                     <span className="w-3 h-3 bg-pink-400 rounded-full mr-2"></span>
                     交際費
                   </span>
                   <span>19.2K</span>
                 </div>
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between border-b-1 border-solid border-lavender-light py-4">
                   <span className="flex items-center">
                     <span className="w-3 h-3 bg-orange-400 rounded-full mr-2"></span>
                     趣味
                   </span>
                   <span>5.5K</span>
                 </div>
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between border-b-1 border-solid border-lavender-light py-4">
                   <span className="flex items-center">
                     <span className="w-3 h-3 bg-yellow-400 rounded-full mr-2"></span>
                     食費
@@ -79,23 +79,28 @@ export default function Home() {
           </div>
 
           {/* Manual Entry Section */}
-          <div className="card max-w-2xl mx-auto">
-            <h2 className="text-xl font-bold mb-6">レシート手動記録</h2>
-            <form className="space-y-4">
-              <div className="grid grid-cols-3 gap-4">
-                <input className="input-field" placeholder="品目名" />
+          <div className="max-w-2xl mx-auto top-border">
+            <h2 className="text-xl font-bold mb-6 text-center">
+              レシート手動記録
+            </h2>
+            <form className="">
+              <div className="grid grid-cols-2 gap-4 mb-8">
+                <input
+                  className="input-field col-span-2"
+                  placeholder="品目名"
+                />
                 <input className="input-field" placeholder="カテゴリ" />
                 <input className="input-field" placeholder="買い物場所" />
+                <textarea
+                  className="input-field min-h-[100px] col-span-2"
+                  placeholder="何かメモしたいこと"
+                />
               </div>
-              <textarea
-                className="input-field min-h-[100px]"
-                placeholder="何かメモしたいこと"
-              />
-              <div className="flex gap-4">
-                <button className="btn-primary flex-1" type="submit">
+              <div className="flex flex-col items-center gap-4">
+                <button className="btn-primary" type="submit">
                   レシートを記録
                 </button>
-                <button className="btn-secondary flex-1" type="button">
+                <button className="btn-secondary" type="button">
                   カメラで記録
                 </button>
               </div>

@@ -9,11 +9,11 @@ export default function Settings() {
   const [catName, setCatName] = useState("");
 
   return (
-    <div className="space-y-8">
-      <h1 className="text-2xl font-bold">設定</h1>
+    <div className="p-12 pb-24">
+      <h1 className="text-2xl font-bold mb-8">設定</h1>
 
       {/* User Settings */}
-      <div className="space-y-6">
+      <div className="space-y-6 mb-12">
         <h2 className="text-lg font-bold">ユーザー設定</h2>
 
         <div className="space-y-4">
@@ -26,9 +26,7 @@ export default function Settings() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
-            <button className="bg-gray-600 text-white px-4 py-2 rounded-lg text-sm">
-              Submit
-            </button>
+            <button className="btn-submit">変更</button>
           </div>
 
           <div className="flex items-center gap-4">
@@ -40,15 +38,13 @@ export default function Settings() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
-            <button className="bg-gray-600 text-white px-4 py-2 rounded-lg text-sm">
-              Submit
-            </button>
+            <button className="btn-submit">変更</button>
           </div>
         </div>
       </div>
 
       {/* Savings Goal */}
-      <div className="space-y-4">
+      <div className="space-y-4 mb-12">
         <h2 className="text-lg font-bold">節約目標金額設定</h2>
         <p className="text-sm text-gray-600 leading-relaxed">
           1ヶ月あたり幾らまで使っても良いかを設定します。
@@ -62,9 +58,7 @@ export default function Settings() {
             value={goal}
             onChange={(e) => setGoal(e.target.value)}
           />
-          <button className="bg-gray-600 text-white px-4 py-2 rounded-lg text-sm">
-            Submit
-          </button>
+          <button className="btn-submit">変更</button>
         </div>
       </div>
 
@@ -78,9 +72,7 @@ export default function Settings() {
             value={catName}
             onChange={(e) => setCatName(e.target.value)}
           />
-          <button className="bg-gray-600 text-white px-4 py-2 rounded-lg text-sm">
-            Submit
-          </button>
+          <button className="btn-submit">変更</button>
         </div>
       </div>
     </div>

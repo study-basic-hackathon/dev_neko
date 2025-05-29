@@ -4,7 +4,7 @@ import "@/styles/globals.css";
 import Layout from "@/components/common/Layout/Layout";
 
 export const metadata: Metadata = {
-  title: "Cat Expenses Report",
+  title: "でぶ猫のための家計簿",
   description: "猫ちゃんの家計簿アプリ",
 };
 

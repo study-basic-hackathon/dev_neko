@@ -7,13 +7,13 @@ export default function Receipts() {
   const [isEdit, setIsEdit] = useState(false);
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-8 p-12 pb-24">
       <h1 className="text-2xl font-bold">レシート記録</h1>
 
       <div className="flex flex-col lg:flex-row gap-8">
         {/* Left side: Camera or Image */}
         <div className="flex-1">
-          <div className="card min-h-[400px] flex flex-col items-center justify-center">
+          <div className="bg-gray-50 min-h-[400px] flex flex-col items-center justify-center rounded-lg">
             {!hasImage ? (
               <>
                 <div className="w-24 h-24 border-4 border-gray-400 rounded-lg mb-6 flex items-center justify-center">
@@ -46,100 +46,108 @@ export default function Receipts() {
         </div>
 
         {/* Right side: Receipt content */}
-        <div className="flex-1">
-          <div className="card min-h-[400px] flex flex-col">
-            {!isEdit ? (
-              <>
-                <div className="flex-1">
-                  <div className="flex items-center mb-4">
-                    <span className="w-3 h-3 bg-yellow-400 rounded-full mr-2"></span>
-                    <span className="font-bold">食費</span>
-                  </div>
-                  <div className="flex items-center text-gray-600 mb-6">
-                    <span className="w-2 h-2 bg-gray-400 rounded-full mr-2"></span>
-                    <span>〇〇スーパー</span>
+        {hasImage && (
+          <div className="flex-1">
+            <div className="card min-h-[400px] flex flex-col">
+              {!isEdit ? (
+                <>
+                  <div className="flex-1">
+                    <div className="flex items-center mb-4">
+                      <span className="w-3 h-3 bg-yellow-400 rounded-full mr-2"></span>
+                      <span className="font-bold">食費</span>
+                    </div>
+                    <div className="flex items-center text-gray-600 mb-6">
+                      <span className="w-2 h-2 bg-gray-400 rounded-full mr-2"></span>
+                      <span>〇〇スーパー</span>
+                    </div>
+
+                    <div className="space-y-4">
+                      <div className="flex justify-between items-center py-3 border-b border-gray-100">
+                        <div>
+                          <div className="font-medium">スポーツドリンク</div>
+                          <div className="text-sm text-gray-500">
+                            〇〇コンビニ
+                          </div>
+                        </div>
+                        <div className="font-medium">240円</div>
+                      </div>
+                      <div className="flex justify-between items-center py-3 border-b border-gray-100">
+                        <div>
+                          <div className="font-medium">ハンバーガー</div>
+                          <div className="text-sm text-gray-500">
+                            〇〇ファストフード
+                          </div>
+                        </div>
+                        <div className="font-medium">300円</div>
+                      </div>
+                      <div className="flex justify-between items-center py-3 border-b border-gray-100">
+                        <div>
+                          <div className="font-medium">ハンバーガー</div>
+                          <div className="text-sm text-gray-500">
+                            〇〇ファストフード
+                          </div>
+                        </div>
+                        <div className="font-medium">300円</div>
+                      </div>
+                    </div>
                   </div>
 
-                  <div className="space-y-4">
-                    <div className="flex justify-between items-center py-3 border-b border-gray-100">
-                      <div>
-                        <div className="font-medium">スポーツドリンク</div>
-                        <div className="text-sm text-gray-500">
-                          〇〇コンビニ
-                        </div>
-                      </div>
-                      <div className="font-medium">240円</div>
-                    </div>
-                    <div className="flex justify-between items-center py-3 border-b border-gray-100">
-                      <div>
-                        <div className="font-medium">ハンバーガー</div>
-                        <div className="text-sm text-gray-500">
-                          〇〇ファストフード
-                        </div>
-                      </div>
-                      <div className="font-medium">300円</div>
-                    </div>
-                    <div className="flex justify-between items-center py-3 border-b border-gray-100">
-                      <div>
-                        <div className="font-medium">ハンバーガー</div>
-                        <div className="text-sm text-gray-500">
-                          〇〇ファストフード
-                        </div>
-                      </div>
-                      <div className="font-medium">300円</div>
-                    </div>
+                  <div className="flex gap-4 mt-8">
+                    <button className="btn-primary flex-1">
+                      レシートを記録する
+                    </button>
+                    <button
+                      className="btn-secondary flex-1"
+                      onClick={() => setIsEdit(true)}
+                    >
+                      レシートを修正する →
+                    </button>
                   </div>
-                </div>
-
-                <div className="flex gap-4 mt-8">
-                  <button className="btn-primary flex-1">
-                    レシートを記録する
-                  </button>
-                  <button
-                    className="btn-secondary flex-1"
-                    onClick={() => setIsEdit(true)}
-                  >
-                    レシートを修正する →
-                  </button>
-                </div>
-              </>
-            ) : (
-              <form className="space-y-4">
-                <div className="flex gap-2">
-                  <input
-                    className="input-field"
-                    defaultValue="スポーツドリンク"
-                  />
-                  <input className="input-field" defaultValue="240円" />
-                </div>
-                <div className="flex gap-2">
-                  <input className="input-field" defaultValue="ハンバーガー" />
-                  <input className="input-field" defaultValue="300円" />
-                </div>
-                <div className="flex gap-2">
-                  <input className="input-field" defaultValue="ハンバーガー" />
-                  <input className="input-field" defaultValue="300円" />
-                </div>
-                <div className="flex gap-4 mt-8">
-                  <button
-                    className="btn-primary flex-1"
-                    type="submit"
-                    onClick={() => setIsEdit(false)}
-                  >
-                    保存
-                  </button>
-                  <button
-                    className="btn-secondary flex-1"
-                    type="button"
-                    onClick={() => setIsEdit(false)}
-                  >
-                    キャンセル
-                  </button>
-                </div>
-              </form>
-            )}
+                </>
+              ) : (
+                <form className="space-y-4">
+                  <div className="flex gap-2">
+                    <input
+                      className="input-field"
+                      defaultValue="スポーツドリンク"
+                    />
+                    <input className="input-field" defaultValue="240円" />
+                  </div>
+                  <div className="flex gap-2">
+                    <input
+                      className="input-field"
+                      defaultValue="ハンバーガー"
+                    />
+                    <input className="input-field" defaultValue="300円" />
+                  </div>
+                  <div className="flex gap-2">
+                    <input
+                      className="input-field"
+                      defaultValue="ハンバーガー"
+                    />
+                    <input className="input-field" defaultValue="300円" />
+                  </div>
+                  <div className="flex gap-4 mt-8">
+                    <button
+                      className="btn-primary flex-1"
+                      type="submit"
+                      onClick={() => setIsEdit(false)}
+                    >
+                      保存
+                    </button>
+                    <button
+                      className="btn-secondary flex-1"
+                      type="button"
+                      onClick={() => setIsEdit(false)}
+                    >
+                      キャンセル
+                    </button>
+                  </div>
+                </form>
+              )}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

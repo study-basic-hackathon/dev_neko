@@ -15,12 +15,11 @@ const Sidebar = () => {
   ];
 
   return (
-    <nav className="w-64 min-h-screen bg-white border-r border-gray-200 p-4">
+    <nav className="w-64 min-h-screen bg-white border-r border-gray-200 p-4 fixed top-0">
       <div className="mb-8">
         <h1 className="text-xl font-bold text-text-black">
-          Cat Expenses Report
+          でぶ猫のための家計簿
         </h1>
-        <p className="text-sm text-gray-500">Expenses</p>
       </div>
 
       <ul className="space-y-2">
@@ -30,7 +29,7 @@ const Sidebar = () => {
               href={item.href}
               className={`flex items-center p-3 rounded-lg transition-colors ${
                 pathname === item.href
-                  ? "bg-primary-500 text-white"
+                  ? "bg-gray-200"
                   : "text-gray-500 hover:bg-gray-100"
               }`}
             >

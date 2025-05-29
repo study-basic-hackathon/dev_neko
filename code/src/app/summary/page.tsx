@@ -1,6 +1,6 @@
 export default function Expenses() {
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 p-12 pb-24">
       <h1 className="text-2xl font-bold">家計簿</h1>
 
       {/* Month Navigation */}
@@ -14,9 +14,9 @@ export default function Expenses() {
 
       <div className="flex flex-col lg:flex-row gap-8">
         {/* Left side: Charts and Meter */}
-        <div className="flex-1 space-y-8">
+        <div className="space-y-8 lg:w-64">
           {/* Pie Chart */}
-          <div className="card text-center">
+          <div className="text-center">
             <div className="w-48 h-48 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6 relative">
               <div className="text-center">
                 <div className="text-sm text-gray-500">2025年 5月</div>
@@ -24,29 +24,29 @@ export default function Expenses() {
               </div>
             </div>
 
-            <div className="space-y-2 text-sm">
-              <div className="flex items-center justify-between">
+            <div className="text-sm">
+              <div className="flex items-center justify-between border-b-1 border-solid border-lavender-light py-4">
                 <span className="flex items-center">
                   <span className="w-3 h-3 bg-blue-500 rounded-full mr-2"></span>
                   家賃
                 </span>
                 <span>2.3K</span>
               </div>
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between border-b-1 border-solid border-lavender-light py-4">
                 <span className="flex items-center">
                   <span className="w-3 h-3 bg-pink-400 rounded-full mr-2"></span>
                   交際費
                 </span>
                 <span>19.2K</span>
               </div>
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between border-b-1 border-solid border-lavender-light py-4">
                 <span className="flex items-center">
                   <span className="w-3 h-3 bg-orange-400 rounded-full mr-2"></span>
                   趣味
                 </span>
                 <span>5.5K</span>
               </div>
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between border-b-1 border-solid border-lavender-light py-4">
                 <span className="flex items-center">
                   <span className="w-3 h-3 bg-yellow-400 rounded-full mr-2"></span>
                   食費
@@ -57,7 +57,7 @@ export default function Expenses() {
           </div>
 
           {/* Savings Meter */}
-          <div className="card text-center">
+          <div className="text-center">
             <h3 className="font-bold mb-4">節約メーター</h3>
             <div className="w-32 h-32 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <span className="text-4xl">😊</span>
@@ -71,41 +71,17 @@ export default function Expenses() {
         </div>
 
         {/* Right side: Expense List */}
-        <div className="flex-1">
+        <div className="lg:flex-auto">
           <div className="card h-full overflow-y-auto">
-            <div className="space-y-6">
+            <div className="space-y-8">
               {/* 交際費 */}
-              <div>
-                <div className="flex items-center mb-3">
+              <div className="border-b border-lavender-light pb-6">
+                <div className="flex items-center mb-5">
                   <span className="w-3 h-3 bg-pink-400 rounded-full mr-2"></span>
                   <span className="font-bold">交際費</span>
                 </div>
-                <div className="flex justify-between items-center py-3 border-b border-gray-100">
-                  <div>
-                    <div className="font-medium">ハンバーガー</div>
-                    <div className="text-sm text-gray-500">
-                      〇〇ファストフード
-                    </div>
-                  </div>
-                  <div className="font-medium">300円</div>
-                </div>
-              </div>
-
-              {/* 食費 */}
-              <div>
-                <div className="flex items-center mb-3">
-                  <span className="w-3 h-3 bg-yellow-400 rounded-full mr-2"></span>
-                  <span className="font-bold">食費</span>
-                </div>
-                <div className="space-y-0">
-                  <div className="flex justify-between items-center py-3 border-b border-gray-100">
-                    <div>
-                      <div className="font-medium">スポーツドリンク</div>
-                      <div className="text-sm text-gray-500">〇〇コンビニ</div>
-                    </div>
-                    <div className="font-medium">240円</div>
-                  </div>
-                  <div className="flex justify-between items-center py-3 border-b border-gray-100">
+                <div className="space-y-5">
+                  <div className="flex justify-between items-center">
                     <div>
                       <div className="font-medium">ハンバーガー</div>
                       <div className="text-sm text-gray-500">
@@ -114,7 +90,33 @@ export default function Expenses() {
                     </div>
                     <div className="font-medium">300円</div>
                   </div>
-                  <div className="flex justify-between items-center py-3 border-b border-gray-100">
+                </div>
+              </div>
+
+              {/* 食費 */}
+              <div className="border-b border-lavender-light pb-6">
+                <div className="flex items-center mb-5">
+                  <span className="w-3 h-3 bg-yellow-400 rounded-full mr-2"></span>
+                  <span className="font-bold">食費</span>
+                </div>
+                <div className="space-y-5">
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <div className="font-medium">スポーツドリンク</div>
+                      <div className="text-sm text-gray-500">〇〇コンビニ</div>
+                    </div>
+                    <div className="font-medium">240円</div>
+                  </div>
+                  <div className="flex justify-between items-cente">
+                    <div>
+                      <div className="font-medium">ハンバーガー</div>
+                      <div className="text-sm text-gray-500">
+                        〇〇ファストフード
+                      </div>
+                    </div>
+                    <div className="font-medium">300円</div>
+                  </div>
+                  <div className="flex justify-between items-cente">
                     <div>
                       <div className="font-medium">ハンバーガー</div>
                       <div className="text-sm text-gray-500">
@@ -127,13 +129,13 @@ export default function Expenses() {
               </div>
 
               {/* 趣味 */}
-              <div>
-                <div className="flex items-center mb-3">
+              <div className="border-b border-lavender-light pb-6">
+                <div className="flex items-center mb-5">
                   <span className="w-3 h-3 bg-orange-400 rounded-full mr-2"></span>
                   <span className="font-bold">趣味</span>
                 </div>
-                <div className="space-y-0">
-                  <div className="flex justify-between items-center py-3 border-b border-gray-100">
+                <div className="space-y-5">
+                  <div className="flex justify-between items-center">
                     <div>
                       <div className="font-medium">ハンバーガー</div>
                       <div className="text-sm text-gray-500">
@@ -142,7 +144,7 @@ export default function Expenses() {
                     </div>
                     <div className="font-medium">300円</div>
                   </div>
-                  <div className="flex justify-between items-center py-3 border-b border-gray-100">
+                  <div className="flex justify-between items-center">
                     <div>
                       <div className="font-medium">ハンバーガー</div>
                       <div className="text-sm text-gray-500">
@@ -151,7 +153,7 @@ export default function Expenses() {
                     </div>
                     <div className="font-medium">300円</div>
                   </div>
-                  <div className="flex justify-between items-center py-3 border-b border-gray-100">
+                  <div className="flex justify-between items-center">
                     <div>
                       <div className="font-medium">ハンバーガー</div>
                       <div className="text-sm text-gray-500">
