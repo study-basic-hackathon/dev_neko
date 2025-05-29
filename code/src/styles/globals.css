@@ -2,30 +2,96 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary-500: #4f378b;
-  --color-text-black: #1d192b;
-  --color-gray-100: #f7f7f7;
-  --color-gray-200: #eeeeee;
-  --color-gray-300: #cac4d0;
-  --color-gray-400: #79747e;
-  --color-gray-500: #4a4458;
+  --color-primary-500: #6b46c1;
+  --color-primary-600: #553c9a;
+  --color-text-black: #1f2937;
+  --color-gray-50: #f9fafb;
+  --color-gray-100: #f3f4f6;
+  --color-gray-200: #e5e7eb;
+  --color-gray-300: #d1d5db;
+  --color-gray-400: #9ca3af;
+  --color-gray-500: #6b7280;
+  --color-gray-600: #4b5563;
+  --color-lavender: #c7b8ea;
+  --color-lavender-light: #e8dff5;
 
   --font-family-sans: "Noto Sans JP", ui-sans-serif, system-ui, sans-serif;
 }
 
 body {
-  @apply bg-gray-100 text-text-black;
+  @apply bg-gray-50 text-text-black;
   font-family: var(--font-family-sans);
 }
 
 .btn-primary {
-  @apply bg-primary-500 text-white px-4 py-2 rounded-lg hover:opacity-90 transition-opacity;
+  @apply bg-primary-500 text-white px-6 py-3 rounded-lg hover:bg-primary-600 transition-colors font-medium;
+}
+
+.btn-secondary {
+  @apply bg-gray-200 text-gray-600 px-6 py-3 rounded-lg hover:bg-gray-300 transition-colors font-medium;
 }
 
 .input-field {
-  @apply w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500;
+  @apply w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white;
 }
 
 .card {
-  @apply bg-white rounded-lg shadow-md p-6;
+  @apply bg-white rounded-lg shadow-sm border border-gray-200 p-6;
+}
+
+.cat-silhouette {
+  width: 120px;
+  height: 120px;
+  background: #4b5563;
+  clip-path: polygon(30% 5%,
+      70% 5%,
+      75% 0%,
+      85% 0%,
+      90% 5%,
+      95% 15%,
+      100% 25%,
+      100% 35%,
+      95% 45%,
+      90% 50%,
+      95% 60%,
+      100% 70%,
+      100% 80%,
+      95% 90%,
+      85% 95%,
+      75% 100%,
+      70% 95%,
+      65% 100%,
+      35% 100%,
+      30% 95%,
+      25% 100%,
+      15% 95%,
+      5% 90%,
+      0% 80%,
+      0% 70%,
+      5% 60%,
+      10% 50%,
+      5% 45%,
+      0% 35%,
+      0% 25%,
+      5% 15%,
+      10% 5%,
+      15% 0%,
+      25% 0%);
+}
+
+.speech-bubble {
+  @apply bg-white rounded-lg shadow-md px-4 py-3 relative;
+}
+
+.speech-bubble::after {
+  content: "";
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 8px solid white;
 }

@@ -1,34 +1,29 @@
 import Link from "next/link";
-import Image from "next/image";
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-200 py-4 px-8">
+    <footer className="bg-lavender-light py-6 px-8 mt-auto">
       <div className="flex justify-between items-center">
-        <div className="flex space-x-4">
+        <div className="flex space-x-6">
           <Link
             href="/terms"
-            className="text-gray-500 hover:text-primary-500 transition-colors"
+            className="text-gray-600 hover:text-primary-500 transition-colors text-sm"
           >
-            利用規約
+            利用規約 →
           </Link>
           <Link
             href="/privacy"
-            className="text-gray-500 hover:text-primary-500 transition-colors"
+            className="text-gray-600 hover:text-primary-500 transition-colors text-sm"
           >
-            プライバシーポリシー
+            プライバシーポリシー →
           </Link>
         </div>
 
-        {/* 猫のイラストは後で差し替え */}
-        <div className="w-16 h-16 relative">
-          <Image
-            src="/images/cat-silhouette.png"
-            alt="猫のシルエット"
-            layout="fill"
-            objectFit="contain"
-          />
-        </div>
+        {/* Cat Silhouette */}
+        <div
+          className="cat-silhouette"
+          style={{ width: "80px", height: "80px" }}
+        ></div>
       </div>
     </footer>
   );

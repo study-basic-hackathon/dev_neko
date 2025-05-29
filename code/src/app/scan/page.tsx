@@ -3,127 +3,142 @@
 import { useState } from "react";
 
 export default function Receipts() {
-  // 仮の状態管理（本来はstoreやAPI連携で管理）
   const [hasImage, setHasImage] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
 
   return (
     <div className="flex flex-col gap-8">
-      <h1 className="text-2xl font-bold mb-2">レシート記録</h1>
-      <div className="flex flex-col md:flex-row gap-8">
-        {/* 左側：カメラ or 画像 */}
-        <div className="flex-1 flex flex-col items-center justify-center bg-white rounded-lg shadow-md p-8 min-h-[320px]">
-          {!hasImage ? (
-            <>
-              <div className="flex flex-col items-center justify-center h-full">
-                <span className="text-[100px] text-gray-400 mb-4">📷</span>
-                <div className="text-gray-500 mb-8">
-                  カメラを起動してレシートを読み取ります
+      <h1 className="text-2xl font-bold">レシート記録</h1>
+
+      <div className="flex flex-col lg:flex-row gap-8">
+        {/* Left side: Camera or Image */}
+        <div className="flex-1">
+          <div className="card min-h-[400px] flex flex-col items-center justify-center">
+            {!hasImage ? (
+              <>
+                <div className="w-24 h-24 border-4 border-gray-400 rounded-lg mb-6 flex items-center justify-center">
+                  <div className="w-8 h-8 bg-gray-400 rounded-full"></div>
                 </div>
+                <p className="text-gray-600 mb-8 text-center">
+                  カメラを起動してレシートを読み取ります
+                </p>
                 <button
                   className="btn-primary"
                   onClick={() => setHasImage(true)}
                 >
                   レシートを記録
                 </button>
-              </div>
-            </>
-          ) : (
-            <>
-              <div className="flex flex-col items-center justify-center h-full">
-                <div className="w-40 h-40 bg-gray-200 rounded-lg flex items-center justify-center mb-4">
-                  {/* 仮の画像エリア */}
-                  <span className="text-5xl">🖼️</span>
+              </>
+            ) : (
+              <>
+                <div className="w-32 h-32 bg-gray-100 rounded-lg flex items-center justify-center mb-6 border-4 border-gray-300">
+                  <div className="text-4xl">🖼️</div>
                 </div>
                 <button
-                  className="btn-primary mb-2"
+                  className="btn-primary"
                   onClick={() => setHasImage(false)}
                 >
                   レシートを撮り直す
                 </button>
-              </div>
-            </>
-          )}
+              </>
+            )}
+          </div>
         </div>
-        {/* 右側：レシート内容リスト or 編集フォーム */}
-        <div className="flex-1 bg-white rounded-lg shadow-md p-8 flex flex-col justify-between">
-          {!isEdit ? (
-            <>
-              <div>
-                <div className="text-lg font-bold mb-4">食費</div>
-                <div className="mb-2 text-gray-500">〇〇スーパー</div>
-                <div className="flex justify-between border-b border-gray-200 py-2 text-sm">
-                  <div>
-                    スポーツドリンク
-                    <br />
-                    〇〇コンビニ
+
+        {/* Right side: Receipt content */}
+        <div className="flex-1">
+          <div className="card min-h-[400px] flex flex-col">
+            {!isEdit ? (
+              <>
+                <div className="flex-1">
+                  <div className="flex items-center mb-4">
+                    <span className="w-3 h-3 bg-yellow-400 rounded-full mr-2"></span>
+                    <span className="font-bold">食費</span>
                   </div>
-                  <div>240円</div>
-                </div>
-                <div className="flex justify-between border-b border-gray-200 py-2 text-sm">
-                  <div>
-                    ハンバーガー
-                    <br />
-                    〇〇ファストフード
+                  <div className="flex items-center text-gray-600 mb-6">
+                    <span className="w-2 h-2 bg-gray-400 rounded-full mr-2"></span>
+                    <span>〇〇スーパー</span>
                   </div>
-                  <div>300円</div>
-                </div>
-                <div className="flex justify-between border-b border-gray-200 py-2 text-sm">
-                  <div>
-                    ハンバーガー
-                    <br />
-                    〇〇ファストフード
+
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center py-3 border-b border-gray-100">
+                      <div>
+                        <div className="font-medium">スポーツドリンク</div>
+                        <div className="text-sm text-gray-500">
+                          〇〇コンビニ
+                        </div>
+                      </div>
+                      <div className="font-medium">240円</div>
+                    </div>
+                    <div className="flex justify-between items-center py-3 border-b border-gray-100">
+                      <div>
+                        <div className="font-medium">ハンバーガー</div>
+                        <div className="text-sm text-gray-500">
+                          〇〇ファストフード
+                        </div>
+                      </div>
+                      <div className="font-medium">300円</div>
+                    </div>
+                    <div className="flex justify-between items-center py-3 border-b border-gray-100">
+                      <div>
+                        <div className="font-medium">ハンバーガー</div>
+                        <div className="text-sm text-gray-500">
+                          〇〇ファストフード
+                        </div>
+                      </div>
+                      <div className="font-medium">300円</div>
+                    </div>
                   </div>
-                  <div>300円</div>
                 </div>
-              </div>
-              <div className="flex gap-4 mt-8">
-                <button className="btn-primary flex-1">
-                  レシートを記録する
-                </button>
-                <button
-                  className="bg-gray-200 text-gray-500 py-2 px-4 rounded-lg flex-1"
-                  onClick={() => setIsEdit(true)}
-                >
-                  レシートを修正する
-                </button>
-              </div>
-            </>
-          ) : (
-            <form className="space-y-4">
-              <div className="flex gap-2">
-                <input
-                  className="input-field"
-                  defaultValue="スポーツドリンク"
-                />
-                <input className="input-field" defaultValue="240円" />
-              </div>
-              <div className="flex gap-2">
-                <input className="input-field" defaultValue="ハンバーガー" />
-                <input className="input-field" defaultValue="300円" />
-              </div>
-              <div className="flex gap-2">
-                <input className="input-field" defaultValue="ハンバーガー" />
-                <input className="input-field" defaultValue="300円" />
-              </div>
-              <div className="flex gap-4 mt-8">
-                <button
-                  className="btn-primary flex-1"
-                  type="submit"
-                  onClick={() => setIsEdit(false)}
-                >
-                  保存
-                </button>
-                <button
-                  className="bg-gray-200 text-gray-500 py-2 px-4 rounded-lg flex-1"
-                  type="button"
-                  onClick={() => setIsEdit(false)}
-                >
-                  キャンセル
-                </button>
-              </div>
-            </form>
-          )}
+
+                <div className="flex gap-4 mt-8">
+                  <button className="btn-primary flex-1">
+                    レシートを記録する
+                  </button>
+                  <button
+                    className="btn-secondary flex-1"
+                    onClick={() => setIsEdit(true)}
+                  >
+                    レシートを修正する →
+                  </button>
+                </div>
+              </>
+            ) : (
+              <form className="space-y-4">
+                <div className="flex gap-2">
+                  <input
+                    className="input-field"
+                    defaultValue="スポーツドリンク"
+                  />
+                  <input className="input-field" defaultValue="240円" />
+                </div>
+                <div className="flex gap-2">
+                  <input className="input-field" defaultValue="ハンバーガー" />
+                  <input className="input-field" defaultValue="300円" />
+                </div>
+                <div className="flex gap-2">
+                  <input className="input-field" defaultValue="ハンバーガー" />
+                  <input className="input-field" defaultValue="300円" />
+                </div>
+                <div className="flex gap-4 mt-8">
+                  <button
+                    className="btn-primary flex-1"
+                    type="submit"
+                    onClick={() => setIsEdit(false)}
+                  >
+                    保存
+                  </button>
+                  <button
+                    className="btn-secondary flex-1"
+                    type="button"
+                    onClick={() => setIsEdit(false)}
+                  >
+                    キャンセル
+                  </button>
+                </div>
+              </form>
+            )}
+          </div>
         </div>
       </div>
     </div>
