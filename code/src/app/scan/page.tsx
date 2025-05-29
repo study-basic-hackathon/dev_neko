@@ -165,34 +165,36 @@ export default function Receipts() {
       <div className="flex flex-col lg:flex-row gap-8">
         {/* Left side: Camera or Image */}
         <div className="flex-1">
-          <div className="bg-gray-50 min-h-[400px] flex flex-col items-center justify-center rounded-lg">
-            {isCropping && capturedImage ? (
-              <div className="w-full flex flex-col items-center">
-                <ReactCrop
-                  crop={crop}
-                  onChange={(c) => setCrop(c)}
-                  onComplete={onCropComplete}
-                >
-                  <img
-                    ref={imgRef}
-                    src={capturedImage}
-                    alt="Receipt to crop"
-                    className="max-w-full max-h-[300px]"
-                  />
-                </ReactCrop>
-                <div className="flex gap-4 mt-4">
-                  <button className="btn-primary" onClick={applyCrop}>
-                    トリミングを適用
-                  </button>
-                  <button className="btn-secondary" onClick={cancelCrop}>
-                    キャンセル
-                  </button>
-                </div>
+          {isCropping && capturedImage ? (
+            <div className="w-full flex flex-col items-center">
+              <ReactCrop
+                crop={crop}
+                onChange={(c) => setCrop(c)}
+                onComplete={onCropComplete}
+              >
+                <img
+                  ref={imgRef}
+                  src={capturedImage}
+                  alt="Receipt to crop"
+                  className="max-w-full max-h-[300px]"
+                />
+              </ReactCrop>
+              <div className="flex gap-4 mt-4">
+                <button className="btn-primary" onClick={applyCrop}>
+                  トリミングを適用
+                </button>
+                <button className="btn-secondary" onClick={cancelCrop}>
+                  キャンセル
+                </button>
               </div>
-            ) : isCameraActive ? (
-              <div className="w-full flex flex-col items-center">
-                <div className="relative w-full max-w-[300px]">
-                  <div className="w-full h-[300px] border-4 border-gray-300 rounded-lg mb-4 overflow-hidden bg-black">
+            </div>
+          ) : isCameraActive ? (
+            <div className="w-full flex flex-col items-center">
+              <div className="relative w-full max-w-[350px]">
+                {/* カメラビューのコンテナ */}
+                <div className="relative">
+                  {/* カメラ映像 */}
+                  <div className="w-full h-[600px] border-8 border-gray-800 rounded-lg overflow-hidden bg-black shadow-2xl">
                     <video
                       ref={videoRef}
                       autoPlay
@@ -200,31 +202,54 @@ export default function Receipts() {
                       muted
                       className="w-full h-full object-cover"
                     ></video>
+
+                    {/* レシートガイド（半透明の枠） */}
+                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                      <div className="w-[80%] h-[70%] border-2 border-dashed border-white opacity-50 rounded"></div>
+                    </div>
+
+                    {/* 撮影ヒント */}
+                    <div className="absolute top-4 left-0 right-0 text-center">
+                      <div className="bg-black bg-opacity-50 text-white py-1 px-3 rounded-full inline-block text-sm">
+                        レシートを枠内に合わせてください
+                      </div>
+                    </div>
                   </div>
-                  <div className="absolute bottom-8 left-0 right-0 flex justify-center">
+
+                  {/* シャッターボタン */}
+                  <div className="absolute -bottom-12 left-0 right-0 flex justify-center">
                     <button
-                      className="btn-primary flex items-center gap-2 px-6 py-3 bg-red-500 hover:bg-red-600 text-white font-bold rounded-full shadow-lg"
+                      className="w-16 h-16 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center shadow-lg border-4 border-white transition-transform transform hover:scale-110"
                       onClick={capturePhoto}
                     >
-                      <span className="text-xl">📸</span>
-                      <span>シャッターを切る</span>
+                      <span className="text-2xl text-white">📸</span>
                     </button>
                   </div>
                 </div>
-                <div className="flex gap-4 mt-2 mb-4">
-                  <p className="text-sm text-gray-600">
-                    カメラ映像が表示されない場合は、ブラウザのカメラ許可を確認してください
-                  </p>
+
+                {/* カメラコントロール */}
+                <div className="mt-16 flex flex-col gap-4 justify-between items-center w-full px-4">
                   <button
-                    className="text-sm text-red-500"
-                    onClick={() => setIsCameraActive(false)}
+                    className="flex items-center gap-1 text-gray-600 hover:text-red-500 transition-colors"
+                    onClick={stopCamera}
                   >
-                    キャンセル
+                    <span>✕</span>
+                    <span>キャンセル</span>
                   </button>
+                  <div className="text-sm text-center text-gray-500">
+                    シャッターボタンをタップして撮影
+                  </div>
                 </div>
               </div>
-            ) : !hasImage ? (
-              <>
+
+              {/* ヘルプテキスト */}
+              <p className="text-sm text-gray-500 mt-6 text-center max-w-[350px]">
+                カメラ映像が表示されない場合は、ブラウザのカメラ許可を確認してください
+              </p>
+            </div>
+          ) : !hasImage ? (
+            <>
+              <div className="bg-gray-50 min-h-[400px] flex flex-col items-center justify-center rounded-lg">
                 <div className="w-24 h-24 border-4 border-gray-400 rounded-lg mb-6 flex items-center justify-center">
                   <div className="w-8 h-8 bg-gray-400 rounded-full"></div>
                 </div>
@@ -234,11 +259,13 @@ export default function Receipts() {
                 <button className="btn-primary" onClick={startCamera}>
                   レシートを記録
                 </button>
-              </>
-            ) : (
-              <>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="w-full flex flex-col items-center">
                 <div
-                  className="w-64 h-64 bg-gray-100 rounded-lg flex items-center justify-center mb-6 border-4 border-gray-300 cursor-pointer"
+                  className="max-w-[350px] h-[600px] bg-gray-100 rounded-lg flex items-center justify-center mb-6 border-4 border-gray-300 cursor-pointer"
                   onClick={handleImageClick}
                 >
                   {capturedImage ? (
@@ -263,9 +290,9 @@ export default function Receipts() {
                 >
                   レシートを撮り直す
                 </button>
-              </>
-            )}
-          </div>
+              </div>
+            </>
+          )}
         </div>
 
         {/* Right side: Receipt content */}
