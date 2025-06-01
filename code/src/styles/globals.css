@@ -1,0 +1,76 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap");
+@import "tailwindcss";
+
+@theme {
+  --color-primary-500: #4F378B;
+  --color-primary-600: #3d3060;
+  --color-text-black: #1f2937;
+  --color-gray-50: #f9fafb;
+  --color-gray-100: #f3f4f6;
+  --color-gray-200: #e5e7eb;
+  --color-gray-300: #d1d5db;
+  --color-gray-400: #9ca3af;
+  --color-gray-500: #6b7280;
+  --color-gray-600: #4b5563;
+  --color-lavender: #c7b8ea;
+  --color-lavender-light: #CAC4D0;
+
+  --font-family-sans: "Noto Sans JP", ui-sans-serif, system-ui, sans-serif;
+}
+
+body {
+  @apply text-text-black;
+  font-family: var(--font-family-sans);
+}
+
+button {
+  @apply cursor-pointer
+}
+
+.btn-primary {
+  @apply bg-primary-500 text-white px-6 py-3 rounded-lg hover:bg-primary-600 transition-colors font-medium w-full max-w-80;
+}
+
+.btn-secondary {
+  @apply bg-gray-200 text-gray-600 px-6 py-3 rounded-lg hover:bg-gray-300 transition-colors font-medium w-full max-w-80;
+}
+
+.btn-submit {
+  @apply bg-gray-600 text-white px-4 py-3.5 rounded-lg text-sm
+}
+
+.input-field {
+  @apply w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white;
+}
+
+.card {
+  @apply bg-white rounded-lg border border-gray-200 p-6;
+}
+
+.cat-silhouette {
+  width: 120px;
+  height: 120px;
+  background-image: url(../../public/cat_dummy.png);
+  background-size: 100%;
+}
+
+.speech-bubble {
+  @apply bg-white rounded-lg shadow-md px-4 py-3 relative;
+}
+
+.top-border {
+  @apply border-t-1 border-gray-200 border-solid pt-16 mt-16;
+}
+
+.speech-bubble::after {
+  content: "";
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 8px solid white;
+}
