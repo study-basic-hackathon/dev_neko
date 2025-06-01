@@ -23,7 +23,7 @@ export default async function postGemini(base64ImageFile: string, mimeType: stri
     model: "gemini-2.0-flash",
     contents: createUserContent([
       createPartFromUri(myfile.uri, myfile.mimeType),
-      "Caption this image.",
+      "内容を読み取ってください。",
     ]),
     config: {
       responseMimeType: "application/json",
