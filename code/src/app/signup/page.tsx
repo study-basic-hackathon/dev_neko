@@ -1,4 +1,4 @@
-export default function Login() {
+export default function Signup() {
   return (
     <div className="min-h-screen flex items-center justify-center relative">
       <div className="w-full max-w-md mx-auto">
@@ -9,9 +9,11 @@ export default function Login() {
           </h1>
         </div>
 
-        {/* Login Form */}
+        {/* Signup Form */}
         <div>
-          <h2 className="text-2xl font-bold text-center mb-8">ログイン</h2>
+          <h2 className="text-2xl font-bold text-center mb-8">
+            アカウントを作成
+          </h2>
           <form className="space-y-4 flex flex-col items-center">
             <input
               className="input-field"
@@ -24,7 +26,7 @@ export default function Login() {
               placeholder="password"
             />
             <button className="btn-primary w-full" type="submit">
-              ログイン
+              サインアップ
             </button>
           </form>
 
@@ -34,14 +36,22 @@ export default function Login() {
             <div className="flex-1 h-px bg-gray-200" />
           </div>
 
-          <div className=" flex flex-col items-center">
-            <button className="btn-secondary w-full mb-4 flex items-center justify-center">
+          <div className="flex flex-col items-center">
+            <button className="btn-secondary w-full mb-6 flex items-center justify-center">
               <span className="mr-2 text-lg">G</span> Githubで作成
             </button>
 
-            <button className="btn-secondary w-full flex items-center justify-center">
-              アカウント作成 <span className="ml-2">→</span>
-            </button>
+            <p className="text-xs text-gray-500 text-center leading-relaxed">
+              続行をクリックすると、
+              <a href="/terms" className="text-primary-500 underline">
+                利用規約
+              </a>{" "}
+              と{" "}
+              <a href="/privacy" className="text-primary-500 underline">
+                プライバシーポリシー
+              </a>{" "}
+              に同意したことになります。
+            </p>
           </div>
         </div>
       </div>
