@@ -35,6 +35,9 @@ services:
         target: /var/lib/mysql
         volume:
           nocopy: true
+      - type: bind
+        source: ./infra/mysql/init_data
+        target: /mysql_init_data
     environment:
       - MYSQL_DATABASE=${DB_DATABASE:-dev_neko}
       - MYSQL_USER=${DB_USERNAME:-noder}
