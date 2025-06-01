@@ -31,3 +31,13 @@ exit
 
 仮想環境を終了する
 docker compose down
+
+# DBのダンプファイルをインポートするとき
+
+docker compose exec db bash
+
+DBコンテナの中に入ってから
+
+cd mysql_init_data
+mysql -u root -p dev_neko < dump.sql
+(パスワードを聞かれるからsecretと入力)
