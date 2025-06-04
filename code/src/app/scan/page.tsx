@@ -31,8 +31,8 @@ export default function Receipts() {
           const stream = await navigator.mediaDevices.getUserMedia({
             video: {
               facingMode: "environment",
-              width: { ideal: 1280 },
-              height: { ideal: 720 },
+              width: { ideal: 720 },
+              height: { ideal: 1280 },
             },
             audio: false,
           });
@@ -163,7 +163,7 @@ export default function Receipts() {
       {/* Hidden canvas for image processing */}
       <canvas ref={canvasRef} style={{ display: "none" }}></canvas>
 
-      <div className="flex flex-col lg:flex-row gap-8">
+      <div className="flex flex-col gap-8">
         {/* Left side: Camera or Image */}
         <div className="flex-1">
           {isCropping && capturedImage ? (
@@ -177,7 +177,7 @@ export default function Receipts() {
                   ref={imgRef}
                   src={capturedImage}
                   alt="Receipt to crop"
-                  className="max-w-full max-h-[300px]"
+                  className="max-w-full max-h-[60vh]"
                 />
               </ReactCrop>
               <div className="flex gap-4 mt-4">
@@ -204,12 +204,12 @@ export default function Receipts() {
                       autoPlay
                       playsInline
                       muted
-                      className="w-full h-full object-cover"
+                      className="w-full h-[70vh] object-cover"
                     ></video>
 
-                    {/* レシートガイド（半透明の枠） */}
+                    {/* レシートガイド（半透明の枠） - 縦長に調整 */}
                     <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                      <div className="w-[80%] h-[70%] border-2 border-dashed border-white opacity-50 rounded"></div>
+                      <div className="w-[60%] h-[85%] border-2 border-dashed border-white opacity-50 rounded"></div>
                     </div>
 
                     {/* 撮影ヒント */}
@@ -275,7 +275,7 @@ export default function Receipts() {
                     <img
                       src={capturedImage}
                       alt="Captured receipt"
-                      className="max-w-full max-h-full object-contain"
+                      className="max-w-full max-h-[70vh] object-contain"
                     />
                   ) : (
                     <div className="text-4xl">🖼️</div>
