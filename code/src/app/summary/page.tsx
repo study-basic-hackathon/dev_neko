@@ -10,6 +10,8 @@ import CircularGraph, {
   ExpenseCategory,
 } from "@/components/CircularGraph/CircularGraph";
 
+import BudgetMeter from "@/components/BudgetMeter/BudgetMeter";
+
 export default function Expenses() {
   // サンプルデータ（画像に合わせて調整）
   const categories: ExpenseCategory[] = [
@@ -81,21 +83,7 @@ export default function Expenses() {
           </div>
 
           {/* Savings Meter */}
-          <div className="text-center">
-            <h3 className="font-bold mb-4">節約メーター</h3>
-            <div className="w-32 h-32 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <span className="text-4xl">😊</span>
-            </div>
-            <div className="text-xl font-bold mb-2">15,683円 / 60000円</div>
-            <div className="text-gray-600 text-sm mb-4">
-              上手に節約できています！
-            </div>
-            <button className="btn-secondary">
-              <span className="flex items-center justify-center">
-                節約設定を変更 <HiArrowRight className="ml-1" />
-              </span>
-            </button>
-          </div>
+          <BudgetMeter />
         </div>
 
         {/* Right side: Expense List */}

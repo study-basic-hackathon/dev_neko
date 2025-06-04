@@ -14,7 +14,7 @@ interface BudgetMeterProps {
 export const BudgetMeter: React.FC<BudgetMeterProps> = ({
   budget = 60000, // デフォルト予算: 60,000円
   spent = 15683, // デフォルト使用額: 15,683円
-  size = 300, // デフォルトサイズ
+  size = 220, // デフォルトサイズ
 }) => {
   // 使用率を計算 (0 ~ 1)
   const usageRatio = spent / budget;
@@ -92,7 +92,7 @@ export const BudgetMeter: React.FC<BudgetMeterProps> = ({
 
   return (
     <div className="flex flex-col items-center max-w-md mx-auto">
-      <h2 className="text-3xl font-bold mb-6">節約メーター</h2>
+      <h2 className="text-xl font-bold">節約メーター</h2>
 
       <div className="relative" style={{ width: size, height: size }}>
         {/* 背景メーター（グレー） */}
@@ -128,13 +128,13 @@ export const BudgetMeter: React.FC<BudgetMeterProps> = ({
       </div>
 
       {/* 金額表示 */}
-      <div className="text-4xl font-bold mt-4 text-center">
+      <div className="text-2xl font-bold text-center mb-2">
         <span style={{ color: meterColor }}>{formattedSpent}円</span>
-        <span className="text-gray-500 text-2xl"> / {formattedBudget}円</span>
+        <span className="text-gray-500 text-xl"> / {formattedBudget}円</span>
       </div>
 
       {/* メッセージ */}
-      <p className="text-xl mt-2 mb-6 text-center">{message}</p>
+      <p className="text-m mb-6 text-center">{message}</p>
 
       {/* 設定変更ボタン */}
       <button className="bg-gray-100 text-gray-800 px-8 py-4 rounded-full text-xl font-medium flex items-center">
