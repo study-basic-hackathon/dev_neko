@@ -1,6 +1,31 @@
 "use client";
 
+import CircularGraph, {
+  ExpenseCategory,
+} from "@/components/CircularGraph/CircularGraph";
+
 export default function Home() {
+  // サンプルデータ（画像に合わせて調整）
+  const categories: ExpenseCategory[] = [
+    { id: "1", name: "家賃", amount: 2300, color: "#4169e1" }, // 青
+    { id: "2", name: "交際費", amount: 19200, color: "#f5a9a9" }, // ピンク
+    { id: "3", name: "趣味", amount: 5500, color: "#f5a142" }, // オレンジ
+    { id: "4", name: "食費", amount: 53000, color: "#f5d742" }, // 黄色
+  ];
+
+  // 合計金額を計算
+  const totalAmount = categories.reduce(
+    (sum, category) => sum + category.amount,
+    0
+  );
+
+  // 金額を単位付きでフォーマットする関数
+  const formatAmountWithUnit = (amount: number) => {
+    if (amount >= 10000) {
+      return `${(amount / 1000).toFixed(1)}K`;
+    }
+    return `${amount.toLocaleString()}`;
+  };
   return (
     <div className="min-h-screen flex flex-col">
       {/* Cat Section */}
@@ -36,42 +61,29 @@ export default function Home() {
 
             {/* Chart and Legend */}
             <div className="flex items-center gap-8 mb-8">
-              <div className="w-48 h-48 bg-gray-100 rounded-full flex items-center justify-center mb-6 relative">
-                <div className="text-center">
-                  <div className="text-sm text-gray-500">2025年 5月</div>
-                  <div className="text-2xl font-bold">15,683円</div>
-                </div>
-              </div>
+              <CircularGraph
+                size={192}
+                categories={categories}
+                totalAmount={totalAmount}
+                date={{ year: 2025, month: 5 }}
+              />
 
               <div className="flex flex-col text-sm flex-auto">
-                <div className="flex items-center justify-between border-b-1 border-solid border-lavender-light py-4">
-                  <span className="flex items-center">
-                    <span className="w-3 h-3 bg-blue-500 rounded-full mr-2"></span>
-                    家賃
-                  </span>
-                  <span>2.3K</span>
-                </div>
-                <div className="flex items-center justify-between border-b-1 border-solid border-lavender-light py-4">
-                  <span className="flex items-center">
-                    <span className="w-3 h-3 bg-pink-400 rounded-full mr-2"></span>
-                    交際費
-                  </span>
-                  <span>19.2K</span>
-                </div>
-                <div className="flex items-center justify-between border-b-1 border-solid border-lavender-light py-4">
-                  <span className="flex items-center">
-                    <span className="w-3 h-3 bg-orange-400 rounded-full mr-2"></span>
-                    趣味
-                  </span>
-                  <span>5.5K</span>
-                </div>
-                <div className="flex items-center justify-between border-b-1 border-solid border-lavender-light py-4">
-                  <span className="flex items-center">
-                    <span className="w-3 h-3 bg-yellow-400 rounded-full mr-2"></span>
-                    食費
-                  </span>
-                  <span>53K</span>
-                </div>
+                {categories.map((category) => (
+                  <div
+                    key={category.id}
+                    className="flex items-center justify-between border-b-1 border-solid border-lavender-light py-4"
+                  >
+                    <span className="flex items-center">
+                      <span
+                        className="w-3 h-3 rounded-full mr-2"
+                        style={{ backgroundColor: category.color }}
+                      ></span>
+                      {category.name}
+                    </span>
+                    <span>{formatAmountWithUnit(category.amount)}</span>
+                  </div>
+                ))}
               </div>
             </div>
 
