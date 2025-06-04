@@ -2,7 +2,7 @@ import Link from "next/link";
 
 const Footer = () => {
   return (
-    <footer className="bg-lavender-light mt-auto  ml-64">
+    <footer className="bg-lavender-light mt-auto md:ml-64">
       <div className="flex items-center justify-end py-6 px-8">
         {/* Cat Silhouette */}
         <div
