@@ -8,7 +8,7 @@ type HeaderProps = {
   menuItems: Array<{
     href: string;
     label: string;
-    icon: string;
+    icon: React.ReactNode;
   }>;
 };
 

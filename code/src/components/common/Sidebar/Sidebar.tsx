@@ -2,14 +2,24 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { HiHome, HiCamera, HiCog } from "react-icons/hi";
+import { FaPiggyBank, FaPaw } from "react-icons/fa";
 
 // Define menu items outside the component so they can be exported
 export const sidebarMenuItems = [
-  { href: "/", label: "ホーム画面", icon: "🏠" },
-  { href: "/summary", label: "家計簿", icon: "💰" },
-  { href: "/scan", label: "レシート記録", icon: "📷" },
-  { href: "/neko", label: "〇〇の様子", icon: "🐱" },
-  { href: "/settings", label: "設定", icon: "⚙️" },
+  { href: "/", label: "ホーム画面", icon: <HiHome className="text-xl" /> },
+  {
+    href: "/summary",
+    label: "家計簿",
+    icon: <FaPiggyBank className="text-xl" />,
+  },
+  {
+    href: "/scan",
+    label: "レシート記録",
+    icon: <HiCamera className="text-xl" />,
+  },
+  { href: "/neko", label: "〇〇の様子", icon: <FaPaw className="text-xl" /> },
+  { href: "/settings", label: "設定", icon: <HiCog className="text-xl" /> },
 ];
 
 const Sidebar = () => {

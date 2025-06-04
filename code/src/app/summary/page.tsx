@@ -1,3 +1,12 @@
+"use client";
+
+import {
+  HiLocationMarker,
+  HiArrowRight,
+  HiChevronLeft,
+  HiChevronRight,
+} from "react-icons/hi";
+
 export default function Expenses() {
   return (
     <div className="space-y-8 p-12 pb-24">
@@ -6,9 +15,13 @@ export default function Expenses() {
       {/* Month Navigation */}
       <div className="bg-gray-100 rounded-lg p-4">
         <div className="flex items-center justify-center gap-4">
-          <button className="text-2xl px-2 text-gray-400">‹</button>
+          <button className="text-2xl px-2 text-gray-400">
+            <HiChevronLeft />
+          </button>
           <span className="text-lg font-semibold">2025年 5月</span>
-          <button className="text-2xl px-2 text-gray-400">›</button>
+          <button className="text-2xl px-2 text-gray-400">
+            <HiChevronRight />
+          </button>
         </div>
       </div>
 
@@ -66,7 +79,11 @@ export default function Expenses() {
             <div className="text-gray-600 text-sm mb-4">
               上手に節約できています！
             </div>
-            <button className="btn-secondary">節約設定を変更 →</button>
+            <button className="btn-secondary">
+              <span className="flex items-center justify-center">
+                節約設定を変更 <HiArrowRight className="ml-1" />
+              </span>
+            </button>
           </div>
         </div>
 
@@ -84,7 +101,8 @@ export default function Expenses() {
                   <div className="flex justify-between items-center">
                     <div>
                       <div className="font-medium">ハンバーガー</div>
-                      <div className="text-sm text-gray-500">
+                      <div className="text-sm text-gray-500 flex items-center">
+                        <HiLocationMarker className="text-gray-500 mr-1" />
                         〇〇ファストフード
                       </div>
                     </div>
@@ -103,14 +121,18 @@ export default function Expenses() {
                   <div className="flex justify-between items-center">
                     <div>
                       <div className="font-medium">スポーツドリンク</div>
-                      <div className="text-sm text-gray-500">〇〇コンビニ</div>
+                      <div className="text-sm text-gray-500 flex items-center">
+                        <HiLocationMarker className="text-gray-500 mr-1" />
+                        〇〇コンビニ
+                      </div>
                     </div>
                     <div className="font-medium">240円</div>
                   </div>
                   <div className="flex justify-between items-cente">
                     <div>
                       <div className="font-medium">ハンバーガー</div>
-                      <div className="text-sm text-gray-500">
+                      <div className="text-sm text-gray-500 flex items-center">
+                        <HiLocationMarker className="text-gray-500 mr-1" />
                         〇〇ファストフード
                       </div>
                     </div>
@@ -119,7 +141,8 @@ export default function Expenses() {
                   <div className="flex justify-between items-cente">
                     <div>
                       <div className="font-medium">ハンバーガー</div>
-                      <div className="text-sm text-gray-500">
+                      <div className="text-sm text-gray-500 flex items-center">
+                        <HiLocationMarker className="text-gray-500 mr-1" />
                         〇〇ファストフード
                       </div>
                     </div>
@@ -138,7 +161,8 @@ export default function Expenses() {
                   <div className="flex justify-between items-center">
                     <div>
                       <div className="font-medium">ハンバーガー</div>
-                      <div className="text-sm text-gray-500">
+                      <div className="text-sm text-gray-500 flex items-center">
+                        <HiLocationMarker className="text-gray-500 mr-1" />
                         〇〇ファストフード
                       </div>
                     </div>
@@ -147,7 +171,8 @@ export default function Expenses() {
                   <div className="flex justify-between items-center">
                     <div>
                       <div className="font-medium">ハンバーガー</div>
-                      <div className="text-sm text-gray-500">
+                      <div className="text-sm text-gray-500 flex items-center">
+                        <HiLocationMarker className="text-gray-500 mr-1" />
                         〇〇ファストフード
                       </div>
                     </div>
@@ -156,7 +181,8 @@ export default function Expenses() {
                   <div className="flex justify-between items-center">
                     <div>
                       <div className="font-medium">ハンバーガー</div>
-                      <div className="text-sm text-gray-500">
+                      <div className="text-sm text-gray-500 flex items-center">
+                        <HiLocationMarker className="text-gray-500 mr-1" />
                         〇〇ファストフード
                       </div>
                     </div>
