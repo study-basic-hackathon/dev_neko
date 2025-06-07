@@ -3,6 +3,7 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import ReactCrop, { centerCrop, makeAspectCrop, Crop } from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
+import { HiCamera, HiLocationMarker, HiArrowRight, HiX } from "react-icons/hi";
 
 export default function Receipts() {
   const [hasImage, setHasImage] = useState(false);
@@ -30,8 +31,8 @@ export default function Receipts() {
           const stream = await navigator.mediaDevices.getUserMedia({
             video: {
               facingMode: "environment",
-              width: { ideal: 1280 },
-              height: { ideal: 720 },
+              width: { ideal: 720 },
+              height: { ideal: 1280 },
             },
             audio: false,
           });
@@ -162,7 +163,7 @@ export default function Receipts() {
       {/* Hidden canvas for image processing */}
       <canvas ref={canvasRef} style={{ display: "none" }}></canvas>
 
-      <div className="flex flex-col lg:flex-row gap-8">
+      <div className="flex flex-col gap-8">
         {/* Left side: Camera or Image */}
         <div className="flex-1">
           {isCropping && capturedImage ? (
@@ -176,7 +177,7 @@ export default function Receipts() {
                   ref={imgRef}
                   src={capturedImage}
                   alt="Receipt to crop"
-                  className="max-w-full max-h-[300px]"
+                  className="max-w-full max-h-[60vh]"
                 />
               </ReactCrop>
               <div className="flex gap-4 mt-4">
@@ -184,7 +185,10 @@ export default function Receipts() {
                   トリミングを適用
                 </button>
                 <button className="btn-secondary" onClick={cancelCrop}>
-                  キャンセル
+                  <span className="flex items-center justify-center">
+                    <HiX className="mr-1" />
+                    キャンセル
+                  </span>
                 </button>
               </div>
             </div>
@@ -200,12 +204,12 @@ export default function Receipts() {
                       autoPlay
                       playsInline
                       muted
-                      className="w-full h-full object-cover"
+                      className="w-full h-[70vh] object-cover"
                     ></video>
 
-                    {/* レシートガイド（半透明の枠） */}
+                    {/* レシートガイド（半透明の枠） - 縦長に調整 */}
                     <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                      <div className="w-[80%] h-[70%] border-2 border-dashed border-white opacity-50 rounded"></div>
+                      <div className="w-[60%] h-[85%] border-2 border-dashed border-white opacity-50 rounded"></div>
                     </div>
 
                     {/* 撮影ヒント */}
@@ -219,22 +223,21 @@ export default function Receipts() {
                   {/* シャッターボタン */}
                   <div className="absolute -bottom-12 left-0 right-0 flex justify-center">
                     <button
-                      className="w-16 h-16 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center shadow-lg border-4 border-white transition-transform transform hover:scale-110"
+                      className="w-16 h-16 bg-primary-500 hover:bg-primary-600 rounded-full flex items-center justify-center shadow-lg border-4 border-white transition-transform transform hover:scale-110"
                       onClick={capturePhoto}
                     >
-                      <span className="text-2xl text-white">📸</span>
+                      <HiCamera className="text-2xl text-white" />
                     </button>
                   </div>
                 </div>
 
                 {/* カメラコントロール */}
                 <div className="mt-16 flex flex-col gap-4 justify-between items-center w-full px-4">
-                  <button
-                    className="flex items-center gap-1 text-gray-600 hover:text-red-500 transition-colors"
-                    onClick={stopCamera}
-                  >
-                    <span>✕</span>
-                    <span>キャンセル</span>
+                  <button className="btn-secondary" onClick={stopCamera}>
+                    <span className="flex items-center justify-center">
+                      <HiX className="mr-1" />
+                      キャンセル
+                    </span>
                   </button>
                   <div className="text-sm text-center text-gray-500">
                     シャッターボタンをタップして撮影
@@ -250,10 +253,10 @@ export default function Receipts() {
           ) : !hasImage ? (
             <>
               <div className="bg-gray-50 min-h-[400px] flex flex-col items-center justify-center rounded-lg">
-                <div className="w-24 h-24 border-4 border-gray-400 rounded-lg mb-6 flex items-center justify-center">
-                  <div className="w-8 h-8 bg-gray-400 rounded-full"></div>
+                <div className="w-24 h-24 mb-6 flex items-center justify-center">
+                  <HiCamera className="w-36 h-36 text-gray-500" />
                 </div>
-                <p className="text-gray-600 mb-8 text-center">
+                <p className="text-gray-600 mb-8 text-center flex items-center justify-center gap-2">
                   カメラを起動してレシートを読み取ります
                 </p>
                 <button className="btn-primary" onClick={startCamera}>
@@ -272,7 +275,7 @@ export default function Receipts() {
                     <img
                       src={capturedImage}
                       alt="Captured receipt"
-                      className="max-w-full max-h-full object-contain"
+                      className="max-w-full max-h-[70vh] object-contain"
                     />
                   ) : (
                     <div className="text-4xl">🖼️</div>
@@ -309,7 +312,7 @@ export default function Receipts() {
                       <span className="font-bold">食費</span>
                     </div>
                     <div className="flex items-center text-gray-600 mb-2">
-                      <span className="w-2 h-2 bg-gray-400 rounded-full mr-2"></span>
+                      <HiLocationMarker className="text-gray-500 mr-2" />
                       <span>〇〇スーパー</span>
                     </div>
 
@@ -317,7 +320,8 @@ export default function Receipts() {
                       <div className="flex justify-between items-center py-4 border-b-1 border-solid border-lavender-light">
                         <div>
                           <div className="font-medium">スポーツドリンク</div>
-                          <div className="text-sm text-gray-500">
+                          <div className="text-sm text-gray-500 flex items-center">
+                            <HiLocationMarker className="text-gray-500 mr-1" />
                             〇〇コンビニ
                           </div>
                         </div>
@@ -326,7 +330,8 @@ export default function Receipts() {
                       <div className="flex justify-between items-center py-4 border-b-1 border-solid border-lavender-light">
                         <div>
                           <div className="font-medium">ハンバーガー</div>
-                          <div className="text-sm text-gray-500">
+                          <div className="text-sm text-gray-500 flex items-center">
+                            <HiLocationMarker className="text-gray-500 mr-1" />
                             〇〇ファストフード
                           </div>
                         </div>
@@ -335,7 +340,8 @@ export default function Receipts() {
                       <div className="flex justify-between items-center py-4 border-b-1 border-solid border-lavender-light">
                         <div>
                           <div className="font-medium">ハンバーガー</div>
-                          <div className="text-sm text-gray-500">
+                          <div className="text-sm text-gray-500 flex items-center">
+                            <HiLocationMarker className="text-gray-500 mr-1" />
                             〇〇ファストフード
                           </div>
                         </div>
@@ -352,7 +358,9 @@ export default function Receipts() {
                       className="btn-secondary flex-1"
                       onClick={() => setIsEdit(true)}
                     >
-                      レシートを修正する →
+                      <span className="flex items-center justify-center">
+                        レシートを修正する <HiArrowRight className="ml-1" />
+                      </span>
                     </button>
                   </div>
                 </>
@@ -364,7 +372,7 @@ export default function Receipts() {
                       <input className="input-field" defaultValue="食費" />
                     </div>
                     <div className="flex items-center text-gray-600 mb-2">
-                      <span className="w-2 h-2 bg-gray-400 rounded-full mr-2"></span>
+                      <HiLocationMarker className="text-gray-500 mr-2" />
                       <input
                         className="input-field"
                         defaultValue="〇〇スーパー"
@@ -377,10 +385,13 @@ export default function Receipts() {
                       defaultValue="スポーツドリンク"
                     />
                     <input className="input-field" defaultValue="240円" />
-                    <input
-                      className="input-field col-span-2"
-                      defaultValue="〇〇コンビニ"
-                    />
+                    <div className="col-span-2 flex items-center">
+                      <HiLocationMarker className="text-gray-500 mr-1" />
+                      <input
+                        className="input-field flex-1"
+                        defaultValue="〇〇コンビニ"
+                      />
+                    </div>
                   </div>
                   <div className="grid grid-cols-2 gap-2">
                     <input
@@ -388,10 +399,13 @@ export default function Receipts() {
                       defaultValue="ハンバーガー"
                     />
                     <input className="input-field" defaultValue="300円" />
-                    <input
-                      className="input-field col-span-2"
-                      defaultValue="〇〇ファストフード"
-                    />
+                    <div className="col-span-2 flex items-center">
+                      <HiLocationMarker className="text-gray-500 mr-1" />
+                      <input
+                        className="input-field flex-1"
+                        defaultValue="〇〇ファストフード"
+                      />
+                    </div>
                   </div>
                   <div className="grid grid-cols-2 gap-2">
                     <input
@@ -399,10 +413,13 @@ export default function Receipts() {
                       defaultValue="ハンバーガー"
                     />
                     <input className="input-field" defaultValue="300円" />
-                    <input
-                      className="input-field col-span-2"
-                      defaultValue="〇〇ファストフード"
-                    />
+                    <div className="col-span-2 flex items-center">
+                      <HiLocationMarker className="text-gray-500 mr-1" />
+                      <input
+                        className="input-field flex-1"
+                        defaultValue="〇〇ファストフード"
+                      />
+                    </div>
                   </div>
                   <div className="flex gap-4 mt-8">
                     <button
@@ -417,7 +434,10 @@ export default function Receipts() {
                       type="button"
                       onClick={() => setIsEdit(false)}
                     >
-                      キャンセル
+                      <span className="flex items-center justify-center">
+                        <HiX className="mr-1" />
+                        キャンセル
+                      </span>
                     </button>
                   </div>
                 </form>
