@@ -102,7 +102,29 @@ export default function Settings() {
             value={goal}
             onChange={(e) => setGoal(e.target.value)}
           />
-          <button className='btn-submit'>変更</button>
+          <button
+            className='btn-submit'
+            onClick={async () => {
+              const res = await fetch('/api/cats', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ money: goal }), // ← goalをmoneyとして送信
+              });
+
+              const data = await res.json();
+
+              if (res.ok) {
+                alert('節約目標金額を更新しました！');
+                setGoal('');
+              } else {
+                alert(`エラー: ${data.message}`);
+              }
+            }}
+          >
+            変更
+          </button>
         </div>
       </div>
 
