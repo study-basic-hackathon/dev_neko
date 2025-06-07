@@ -3,7 +3,7 @@ import { db } from '@/lib/db';
 
 export async function GET() {
   try {
-    const [rows] = await db.query('SELECT * FROM cats');
+    const [rows] = await db.query('SELECT * FROM cats WHERE user_id = ?', [1]); // 仮ユーザーID 1
     return NextResponse.json(rows); // rows は cat_name などの情報が含まれる
   } catch (error) {
     console.error(error);
