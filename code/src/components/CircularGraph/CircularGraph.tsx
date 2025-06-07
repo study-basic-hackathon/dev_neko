@@ -10,6 +10,14 @@ export type ExpenseCategory = {
   color: string;
 };
 
+// デフォルトのカテゴリーデータ
+export const defaultCategories: ExpenseCategory[] = [
+  { id: "1", name: "家賃", amount: 9300, color: "#4169e1" }, // 青
+  { id: "2", name: "交際費", amount: 19200, color: "#f5a9a9" }, // ピンク
+  { id: "3", name: "趣味", amount: 5500, color: "#f5a142" }, // オレンジ
+  { id: "4", name: "食費", amount: 53000, color: "#f5d742" }, // 黄色
+];
+
 // コンポーネントのプロップス型定義
 interface CircularGraphProps {
   // グラフのサイズ（幅と高さ）
@@ -29,12 +37,7 @@ export const CircularGraph: React.FC<CircularGraphProps> = ({
   size = 192, // デフォルトサイズは192px (w-48 h-48)
   date = { year: 2025, month: 5 },
   totalAmount = 15683,
-  categories = [
-    { id: "1", name: "家賃", amount: 2300, color: "#4169e1" }, // 青
-    { id: "2", name: "交際費", amount: 19200, color: "#f5a9a9" }, // ピンク
-    { id: "3", name: "趣味", amount: 5500, color: "#f5a142" }, // オレンジ
-    { id: "4", name: "食費", amount: 53000, color: "#f5d742" }, // 黄色
-  ],
+  categories = defaultCategories,
 }) => {
   // 円グラフの中心座標
   const center = size / 2;

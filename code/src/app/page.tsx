@@ -3,31 +3,16 @@
 import { useEffect, useState } from 'react';
 
 import CircularGraph, {
-  ExpenseCategory,
+  defaultCategories,
 } from "@/components/CircularGraph/CircularGraph";
 
 export default function Home() {
-  // サンプルデータ（画像に合わせて調整）
-  const categories: ExpenseCategory[] = [
-    { id: "1", name: "家賃", amount: 2300, color: "#4169e1" }, // 青
-    { id: "2", name: "交際費", amount: 19200, color: "#f5a9a9" }, // ピンク
-    { id: "3", name: "趣味", amount: 5500, color: "#f5a142" }, // オレンジ
-    { id: "4", name: "食費", amount: 53000, color: "#f5d742" }, // 黄色
-  ];
-
   // 合計金額を計算
-  const totalAmount = categories.reduce(
+  const totalAmount = defaultCategories.reduce(
     (sum, category) => sum + category.amount,
     0
   );
 
-  // 金額を単位付きでフォーマットする関数
-  const formatAmountWithUnit = (amount: number) => {
-    if (amount >= 10000) {
-      return `${(amount / 1000).toFixed(1)}K`;
-    }
-    return `${amount.toLocaleString()}`;
-  };
   const [catName, setCatName] = useState<string | null>(null);
 
   useEffect(() => {
@@ -84,13 +69,13 @@ export default function Home() {
             <div className="flex items-center gap-8 mb-8">
               <CircularGraph
                 size={192}
-                categories={categories}
+                categories={defaultCategories}
                 totalAmount={totalAmount}
                 date={{ year: 2025, month: 5 }}
               />
 
               <div className="flex flex-col text-sm flex-auto">
-                {categories.map((category) => (
+                {defaultCategories.map((category) => (
                   <div
                     key={category.id}
                     className="flex items-center justify-between border-b-1 border-solid border-lavender-light py-4"
@@ -102,7 +87,7 @@ export default function Home() {
                       ></span>
                       {category.name}
                     </span>
-                    <span>{formatAmountWithUnit(category.amount)}</span>
+                    <span>{category.amount}円</span>
                   </div>
                 ))}
               </div>
