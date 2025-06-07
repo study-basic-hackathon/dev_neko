@@ -23,6 +23,12 @@ npm install
 npx cdk bootstrap
 ```
 
+このbootstrapで作成されるリソース
+
+ロールが複数
+ECRのリポジトリ1つ
+S3のバケット1つ
+
 ### 3. デプロイの実行
 
 ```bash
