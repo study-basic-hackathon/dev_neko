@@ -8,6 +8,23 @@ export default function Settings() {
   const [goal, setGoal] = useState('');
   const [catName, setCatName] = useState('');
 
+  const submitEmailChange = async () => {
+    const res = await fetch('/api/users', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email }), // emailだけ送る
+    });
+    const data = await res.json();
+    if (res.ok) {
+      alert('メールアドレスを更新しました！');
+      setEmail(''); // 入力欄を空にする
+    } else {
+      alert(`エラー: ${data.message}`);
+    }
+  };
+
   return (
     <div className='p-12 pb-24'>
       <h1 className='text-2xl font-bold mb-8'>設定</h1>
@@ -28,24 +45,7 @@ export default function Settings() {
             />
             <button
               className='btn-submit'
-              onClick={async () => {
-                const res = await fetch('/api/users', {
-                  method: 'POST',
-                  headers: {
-                    'Content-Type': 'application/json',
-                  },
-                  body: JSON.stringify({ email }), // emailだけ送る
-                });
-
-                const data = await res.json();
-
-                if (res.ok) {
-                  alert('メールアドレスを更新しました！');
-                  setEmail(''); // ← 入力欄を空にする
-                } else {
-                  alert(`エラー: ${data.message}`);
-                }
-              }}
+              onClick={submitEmailChange}
             >
               変更
             </button>
