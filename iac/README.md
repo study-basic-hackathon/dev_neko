@@ -10,9 +10,18 @@
 
 ## 前提条件
 
-- Node.js (v14.x以上)
-- AWS CLI（設定済み）
-- AWS CDK CLI
+### AWS側
+
+- AWSアカウント作成済み
+- AWS CLI用のユーザーを作成済み
+- EC2にSSH接続するためのSSHキーペアをAWSマネジメントコンソールから作成済み
+
+### ローカル側
+
+- Node.jsがインストール済み
+- AWS CLIがインストール済み
+- AWS CLIのプロフィールが設定済み
+- AWS CDK CLIを使用 
 
 ## 使用方法
 
@@ -58,6 +67,27 @@ npx cdk destroy --profile (使用するプロフィール)
 - `CDK_DEFAULT_REGION` - デプロイ先リージョン（デフォルト: ap-northeast-1）
 - `KEY_PAIR_NAME` - 使用するキーペア名
 - `VPC_ID` - 既存のVPC IDを使用する場合（オプション）
+
+## デプロイシナリオ
+
+### AWS CDKを使用したサーバーの構築
+
+1. EC2インスタンスを作成
+1. Node.js、MySQL、Apache（リバースプロキシ用）をインストール
+1. `npm install -g pm2` を実行し、Next.jsのプロセス管理ができるようにする
+1. Gitを使ってソースコードをclone
+1. 必要な環境変数を設定（APIキーなどはAWS SecretManagerを使う）
+1. `npm ci --production` 、 `npm run build` を実行
+1. `pm2 start npm --name "nextjs-app" -- start` を実行（ecosystem.config.tsを作成して読み込むこともできる） 
+
+削除できるなら削除する
+
+### 既に動いているサーバーでソースコードを更新したい場合
+
+1. ソースコードをpull
+1. `npm ci --production` 、 `npm run build` を実行
+1. `pm2 reload nextjs-app --wait-ready` を実行 
+
 
 ## 学習内容
 
