@@ -4,7 +4,6 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import ReactCrop, { Crop } from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
 import { HiCamera, HiLocationMarker, HiArrowRight, HiX } from "react-icons/hi";
-import postGemini from "@/lib/postGemini";
 
 export default function Receipts() {
   const [hasImage, setHasImage] = useState(false);
@@ -17,7 +16,20 @@ export default function Receipts() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const imgRef = useRef<HTMLImageElement>(null);
-  const [geminiResult, setGeminiResult] = useState<string | null>(null);
+  const [geminiResult] = useState<string | null>(null);
+  type ReceiptItem = {
+    item_name: string;
+    total_price: string;
+    branch_name: string;
+  };
+
+  type ReceiptData = {
+    category: string;
+    shop_name: string;
+    items: ReceiptItem[];
+  };
+
+  const [parsedReceipt, setParsedReceipt] = useState<ReceiptData | null>(null);
 
   // Start camera function
   const startCamera = useCallback(async () => {
@@ -99,12 +111,38 @@ export default function Receipts() {
         setHasImage(true);
         stopCamera();
 
+        setCapturedImage(imageDataUrl);
+        setHasImage(true);
+        stopCamera();
+
+        // ここから
         try {
-          const result = await postGemini(imageDataUrl);
-          console.log("Geminiからの返答:", result);
-          setGeminiResult(result);
+          const res = await fetch("/api/gemini", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              base64ImageFile: imageDataUrl,
+              mimeType: "image/jpeg",
+            }),
+          });
+
+          const data = await res.json();
+          console.log("Geminiからの返答（API経由）:", data);
+
+          // JSONパースして状態に保存
+          if (data?.result) {
+            try {
+              const parsed: ReceiptData = JSON.parse(data.result);
+              console.log("📄 パースされたレシート情報:", parsed);
+              setParsedReceipt(parsed);
+            } catch (err) {
+              console.error("❌ JSONパースエラー:", err);
+            }
+          } else {
+            console.warn("⚠️ Gemini APIから結果が返ってきませんでした:", data);
+          }
         } catch (error) {
-          console.error("Geminiエラー:", error);
+          console.error("Gemini APIリクエストエラー:", error);
         }
       }
     }
@@ -316,53 +354,43 @@ export default function Receipts() {
         </div>
 
         {/* Right side: Receipt content */}
+        {/* Right side: Receipt content */}
         {hasImage && (
           <div className="flex-1">
             <div className="card min-h-[400px] flex flex-col">
               {!isEdit ? (
                 <>
-                  <div className="flex-1">
-                    <div className="flex items-center mb-4">
-                      <span className="w-3 h-3 bg-yellow-400 rounded-full mr-2"></span>
-                      <span className="font-bold">食費</span>
-                    </div>
-                    <div className="flex items-center text-gray-600 mb-2">
-                      <HiLocationMarker className="text-gray-500 mr-2" />
-                      <span>〇〇スーパー</span>
-                    </div>
+                  {/* カテゴリ */}
+                  <div className="flex items-center mb-4">
+                    <span className="w-3 h-3 bg-yellow-400 rounded-full mr-2"></span>
+                    <span className="font-bold">
+                      {parsedReceipt?.category || "未分類"}
+                    </span>
+                  </div>
 
-                    <div className="">
-                      <div className="flex justify-between items-center py-4 border-b-1 border-solid border-lavender-light">
+                  {/* 店舗名 */}
+                  <div className="flex items-center text-gray-600 mb-2">
+                    <HiLocationMarker className="text-gray-500 mr-2" />
+                    <span>{parsedReceipt?.shop_name || "店舗名未取得"}</span>
+                  </div>
+
+                  {/* 商品一覧 */}
+                  <div>
+                    {parsedReceipt?.items?.map((item, idx) => (
+                      <div
+                        key={idx}
+                        className="flex justify-between items-center py-4 border-b border-solid border-lavender-light"
+                      >
                         <div>
-                          <div className="font-medium">スポーツドリンク</div>
+                          <div className="font-medium">{item.item_name}</div>
                           <div className="text-sm text-gray-500 flex items-center">
                             <HiLocationMarker className="text-gray-500 mr-1" />
-                            〇〇コンビニ
+                            {item.branch_name || "支店名なし"}
                           </div>
                         </div>
-                        <div className="font-medium">240円</div>
+                        <div className="font-medium">{item.total_price}円</div>
                       </div>
-                      <div className="flex justify-between items-center py-4 border-b-1 border-solid border-lavender-light">
-                        <div>
-                          <div className="font-medium">ハンバーガー</div>
-                          <div className="text-sm text-gray-500 flex items-center">
-                            <HiLocationMarker className="text-gray-500 mr-1" />
-                            〇〇ファストフード
-                          </div>
-                        </div>
-                        <div className="font-medium">300円</div>
-                      </div>
-                      <div className="flex justify-between items-center py-4 border-b-1 border-solid border-lavender-light">
-                        <div>
-                          <div className="font-medium">ハンバーガー</div>
-                          <div className="text-sm text-gray-500 flex items-center">
-                            <HiLocationMarker className="text-gray-500 mr-1" />
-                            〇〇ファストフード
-                          </div>
-                        </div>
-                        <div className="font-medium">300円</div>
-                      </div>
-                    </div>
+                    ))}
                   </div>
 
                   <div className="flex gap-4 mt-8">
