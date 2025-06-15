@@ -74,6 +74,7 @@ npx cdk destroy --profile (使用するプロフィール)
 
 1. EC2インスタンスを作成
 1. Node.js、MySQL、Apache（リバースプロキシ用）をインストール
+1. route 53で `dev-neko.arctic-street.net` を作成したEC2インスタンスに振り向ける
 1. `npm install -g pm2` を実行し、Next.jsのプロセス管理ができるようにする
 1. Gitを使ってソースコードをclone
 1. 必要な環境変数を設定（APIキーなどはAWS SecretManagerを使う）
