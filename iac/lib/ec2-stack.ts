@@ -1,5 +1,6 @@
 import * as cdk from 'aws-cdk-lib';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
+import * as route53 from 'aws-cdk-lib/aws-route53';
 import { Construct } from 'constructs';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -26,8 +27,11 @@ export class Ec2Stack extends cdk.Stack {
     // インスタンス起動時に実行するスクリプト
     this.configureUserData(instance);
 
+    // Route 53設定
+    const hostedZone = this.setupRoute53(instance);
+
     // 出力設定
-    this.defineOutputs(instance, instanceName, sgName);
+    this.defineOutputs(instance, instanceName, sgName, hostedZone);
   }
 
   /**
@@ -91,17 +95,53 @@ export class Ec2Stack extends cdk.Stack {
     // インスタンス起動時に実行するスクリプト
     instance.userData.addCommands(
       'yum update -y',
+      
+      // Voltaのインストール（ec2-userとして実行）
+      'sudo -u ec2-user bash -c "curl https://get.volta.sh | bash"',
+      
+      // ec2-userの.bashrcにVoltaのPATHを追加
+      'sudo -u ec2-user bash -c "echo \'export PATH=\"\\$HOME/.volta/bin:\\$PATH\"\' >> /home/ec2-user/.bashrc"',
+      
+      // Node.js v22をVolta経由でインストール（直接パス指定）
+      'sudo -u ec2-user /home/ec2-user/.volta/bin/volta install node@22',
+      
+      // MySQL 8のインストール
+      'yum install -y mysql-server',
+      'systemctl start mysqld',
+      'systemctl enable mysqld',
+      
+      // Apacheのインストール
       'yum install -y httpd',
       'systemctl start httpd',
       'systemctl enable httpd',
-      'echo "<html><body><h1>Hello from AWS CDK</h1></body></html>" > /var/www/html/index.html'
+      'echo "<html><body><h1>Hello from AWS CDK</h1><p>Node.js version: $(sudo -u ec2-user /home/ec2-user/.volta/bin/node --version)</p><p>MySQL version: $(mysqld --version)</p></body></html>" > /var/www/html/index.html'
     );
+  }
+
+  /**
+   * Route 53のHosted ZoneとAレコードを設定する
+   */
+  private setupRoute53(instance: ec2.Instance): route53.IHostedZone {
+    // 既存のHosted Zoneを取得
+    const hostedZone = route53.HostedZone.fromLookup(this, 'HostedZone', {
+      domainName: 'arctic-street.net',
+    });
+
+    // dev-neko.arctic-street.netのAレコードを作成
+    new route53.ARecord(this, 'DevNekoARecord', {
+      zone: hostedZone,
+      recordName: 'dev-neko',
+      target: route53.RecordTarget.fromIpAddresses(instance.instancePublicIp),
+      ttl: cdk.Duration.minutes(5),
+    });
+
+    return hostedZone;
   }
 
   /**
    * CloudFormationのアウトプットを定義する
    */
-  private defineOutputs(instance: ec2.Instance, instanceName: string, sgName: string): void {
+  private defineOutputs(instance: ec2.Instance, instanceName: string, sgName: string, hostedZone: route53.IHostedZone): void {
     // 出力
     new cdk.CfnOutput(this, 'InstanceId', {
       value: instance.instanceId,
@@ -126,6 +166,16 @@ export class Ec2Stack extends cdk.Stack {
     new cdk.CfnOutput(this, 'SecurityGroupName', {
       value: sgName,
       description: 'Security Group Name',
+    });
+    
+    new cdk.CfnOutput(this, 'DomainName', {
+      value: 'dev-neko.arctic-street.net',
+      description: 'Domain Name',
+    });
+    
+    new cdk.CfnOutput(this, 'HostedZoneId', {
+      value: hostedZone.hostedZoneId,
+      description: 'Hosted Zone ID',
     });
   }
 }
