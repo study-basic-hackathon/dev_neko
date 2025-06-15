@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, useRef, useCallback, useEffect } from "react";
-import ReactCrop, { centerCrop, makeAspectCrop, Crop } from "react-image-crop";
+import ReactCrop, { Crop } from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
 import { HiCamera, HiLocationMarker, HiArrowRight, HiX } from "react-icons/hi";
+import postGemini from "@/lib/postGemini";
 
 export default function Receipts() {
   const [hasImage, setHasImage] = useState(false);
@@ -16,6 +17,7 @@ export default function Receipts() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const imgRef = useRef<HTMLImageElement>(null);
+  const [geminiResult, setGeminiResult] = useState<string | null>(null);
 
   // Start camera function
   const startCamera = useCallback(async () => {
@@ -77,7 +79,7 @@ export default function Receipts() {
   }, []);
 
   // Capture photo function
-  const capturePhoto = useCallback(() => {
+  const capturePhoto = useCallback(async () => {
     if (videoRef.current && canvasRef.current) {
       const video = videoRef.current;
       const canvas = canvasRef.current;
@@ -96,6 +98,14 @@ export default function Receipts() {
         setCapturedImage(imageDataUrl);
         setHasImage(true);
         stopCamera();
+
+        try {
+          const result = await postGemini(imageDataUrl);
+          console.log("Geminiからの返答:", result);
+          setGeminiResult(result);
+        } catch (error) {
+          console.error("Geminiエラー:", error);
+        }
       }
     }
   }, [stopCamera]);
@@ -279,6 +289,11 @@ export default function Receipts() {
                     />
                   ) : (
                     <div className="text-4xl">🖼️</div>
+                  )}
+                  {geminiResult && (
+                    <pre className="mt-4 p-2 bg-gray-100 text-sm rounded text-left w-full max-w-lg">
+                      {JSON.stringify(geminiResult, null, 2)}
+                    </pre>
                   )}
                 </div>
                 <p className="text-sm text-gray-500 mb-4">
