@@ -205,6 +205,41 @@ export default function Receipts() {
     };
   }, [stopCamera]);
 
+  const handleSaveReceipt = async () => {
+    if (!parsedReceipt) return;
+
+    try {
+      const res = await fetch("/api/receipts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          user_id: 1,
+          address: parsedReceipt.shop_name,
+          total_price: parsedReceipt.total_price,
+          items: parsedReceipt.items.map((item) => ({
+            item_name: item.item_name,
+            item_price: item.item_price,
+          })),
+        }),
+      });
+
+      const result = await res.json();
+
+      if (result.success) {
+        alert("✅ レシートを記録しました！");
+        // 必要ならリセット処理など
+        setCapturedImage(null);
+        setParsedReceipt(null);
+        setHasImage(false);
+      } else {
+        alert("❌ レシートの記録に失敗しました");
+      }
+    } catch (error) {
+      console.error("保存エラー:", error);
+      alert("❌ サーバーエラーが発生しました");
+    }
+  };
+
   return (
     <div className="flex flex-col gap-8 p-12 pb-24">
       <h1 className="text-2xl font-bold">レシート記録</h1>
@@ -399,7 +434,7 @@ export default function Receipts() {
                     </div>
                   </div>
 
-                  <div className="flex gap-4 mt-8">
+                  <div className="flex gap-4 mt-8" onClick={handleSaveReceipt}>
                     <button className="btn-primary flex-1">
                       レシートを記録する
                     </button>
