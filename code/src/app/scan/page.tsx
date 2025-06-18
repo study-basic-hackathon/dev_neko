@@ -19,13 +19,14 @@ export default function Receipts() {
   const [geminiResult] = useState<string | null>(null);
   type ReceiptItem = {
     item_name: string;
-    total_price: string;
+    item_price: number;
     branch_name: string;
   };
 
   type ReceiptData = {
     category: string;
     shop_name: string;
+    total_price: number;
     items: ReceiptItem[];
   };
 
@@ -364,7 +365,7 @@ export default function Receipts() {
                   <div className="flex items-center mb-4">
                     <span className="w-3 h-3 bg-yellow-400 rounded-full mr-2"></span>
                     <span className="font-bold">
-                      {parsedReceipt?.category || "未分類"}
+                      {parsedReceipt?.category || "食費"}
                     </span>
                   </div>
 
@@ -383,14 +384,19 @@ export default function Receipts() {
                       >
                         <div>
                           <div className="font-medium">{item.item_name}</div>
-                          <div className="text-sm text-gray-500 flex items-center">
+                          {/* <div className="text-sm text-gray-500 flex items-center">
                             <HiLocationMarker className="text-gray-500 mr-1" />
                             {item.branch_name || "支店名なし"}
-                          </div>
+                          </div> */}
                         </div>
-                        <div className="font-medium">{item.total_price}円</div>
+                        <div className="font-medium">{item.item_price}円</div>
                       </div>
                     ))}
+
+                    {/* 合計 */}
+                    <div className="mt-4 text-right font-bold text-lg">
+                      合計: {parsedReceipt?.total_price?.toLocaleString()}円
+                    </div>
                   </div>
 
                   <div className="flex gap-4 mt-8">
