@@ -26,7 +26,7 @@ mysql -e "FLUSH PRIVILEGES;"
 mysql -e "CREATE DATABASE ${MYSQL_DB:-dev_neko};"
 
 # Apacheのインストール
-yum install -y httpd
+yum install -y httpd mod_ssl
 systemctl start httpd
 systemctl enable httpd
 
@@ -62,3 +62,7 @@ certbot --apache -d dev-neko.arctic-street.net --non-interactive --agree-tos --e
 
 # 証明書の自動更新設定
 # echo "0 12 * * * /usr/bin/certbot renew --quiet" | crontab -
+
+rm -f /etc/httpd/conf.d/dev-neko-le-ssl.conf /etc/httpd/conf.d/dev-neko.conf
+cp /tmp/setup_script/dev-neko-virtual.conf /etc/httpd/conf.d
+systemctl reload httpd

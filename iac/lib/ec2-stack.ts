@@ -88,11 +88,10 @@ export class Ec2Stack extends cdk.Stack {
       autoDeleteObjects: true,
     });
 
-    // スクリプトファイルをS3にアップロード
+    // setup_scriptディレクトリのファイルをS3にアップロード
     new s3deploy.BucketDeployment(this, 'ScriptDeployment', {
-      sources: [s3deploy.Source.asset(path.join(__dirname))],
+      sources: [s3deploy.Source.asset(path.join(__dirname, 'setup_script'))],
       destinationBucket: bucket,
-      include: ['user-data.sh', 'dev-neko-virtual.conf'],
     });
 
     return bucket;
@@ -159,12 +158,13 @@ export class Ec2Stack extends cdk.Stack {
       `export MYSQL_PASSWORD=${mysqlPassword}`,
       `export MYSQL_DB=${mysqlDb}`,
       
-      // S3からスクリプトをダウンロード
-      `aws s3 cp s3://${scriptBucket.bucketName}/user-data.sh /tmp/user-data.sh`,
-      'chmod +x /tmp/user-data.sh',
+      // S3からセットアップスクリプトをダウンロード
+      'mkdir -p /tmp/setup_script',
+      `aws s3 sync s3://${scriptBucket.bucketName}/ /tmp/setup_script/`,
+      'chmod +x /tmp/setup_script/user-data.sh',
       
       // スクリプトを実行
-      '/tmp/user-data.sh'
+      '/tmp/setup_script/user-data.sh'
     );
   }
 
