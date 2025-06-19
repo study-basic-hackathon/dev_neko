@@ -12,15 +12,15 @@ docker compose exec node npm install
 
 docker compose up -d
 
-npm run devするために中に入る
+npm run dev するために中に入る
 
 docker compose exec node bash
 
-npm run devする
+npm run dev する
 
 npm run dev
 
-→開発サーバーが立ち上がる
+→ 開発サーバーが立ち上がる
 
 # 終わる時
 
@@ -32,12 +32,12 @@ exit
 仮想環境を終了する
 docker compose down
 
-# DBのダンプファイルをインポートするとき
+# DB のダンプファイルをインポートするとき
 
 docker compose exec db bash
 
-DBコンテナの中に入ってから
+DB コンテナの中に入ってから
 
 cd mysql_init_data
 mysql -u root -p dev_neko < dump.sql
-(パスワードを聞かれるからsecretと入力)
+(パスワードを聞かれるから secret と入力)
