@@ -61,9 +61,6 @@ export default function Home() {
   );
 
   const totalAmount = totalPrice;
-  console.log("✅ totalPrice from API:", totalPrice);
-  console.log("✅ totalAmount passed to CircularGraph:", totalAmount);
-  console.log("✅ expenseCategories:", expenseCategories);
 
   return (
     <div className="min-h-screen flex flex-col">
