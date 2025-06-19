@@ -67,6 +67,13 @@ export class Ec2Stack extends cdk.Stack {
       'Allow HTTP access from anywhere'
     );
 
+    // HTTPSアクセスを許可（443番ポート）
+    securityGroup.addIngressRule(
+      ec2.Peer.anyIpv4(),
+      ec2.Port.tcp(443),
+      'Allow HTTPS access from anywhere'
+    );
+
     return securityGroup;
   }
 
@@ -85,7 +92,7 @@ export class Ec2Stack extends cdk.Stack {
     new s3deploy.BucketDeployment(this, 'ScriptDeployment', {
       sources: [s3deploy.Source.asset(path.join(__dirname))],
       destinationBucket: bucket,
-      include: ['user-data.sh'],
+      include: ['user-data.sh', 'dev-neko-virtual.conf'],
     });
 
     return bucket;
