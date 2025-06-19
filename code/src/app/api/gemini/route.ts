@@ -1,50 +1,60 @@
-// /app/api/gemini/route.ts
-import { NextResponse } from 'next/server';
+import {
+  GoogleGenAI,
+  createUserContent,
+  createPartFromUri,
+} from "@google/genai";
+import { structuredOutputSetting } from "@/lib/structuredOutputSetting";
+import toBlob from "@/lib/toBlob";
+
+export const dynamic = "force-dynamic"; // 動的ルートとして扱う（ISR回避）
 
 export async function POST(req: Request) {
-  const { imageBase64 } = await req.json();
+  const apiKey = process.env.GOOGLE_GENAI_API_KEY;
 
-  const apiKey = process.env.GEMINI_API_KEY!;
-  const url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-vision:generateContent?key=' + apiKey;
-
-  const prompt = {
-    contents: [
-      {
-        parts: [
-          {
-            text: `次のレシート画像から、商品名・価格・店舗名・合計金額を読み取ってJSONで返してください。出力形式:
-{
-  "store": "〇〇スーパー",
-  "items": [
-    { "name": "パン", "price": 120 },
-    { "name": "コーヒー", "price": 180 }
-  ],
-  "total": 300
-}`,
-          },
-          {
-            inlineData: {
-              mimeType: 'image/jpeg',
-              data: imageBase64.replace(/^data:image\/\w+;base64,/, ''),
-            },
-          },
-        ],
-      },
-    ],
-  };
+  if (!apiKey) {
+    return Response.json(
+      { error: "❌ APIキーが設定されていません。" },
+      { status: 500 }
+    );
+  }
 
   try {
-    const res = await fetch(url, {
-      method: 'POST',
-      body: JSON.stringify(prompt),
-      headers: { 'Content-Type': 'application/json' },
+    const { base64ImageFile, mimeType } = await req.json();
+
+    const ai = new GoogleGenAI({ apiKey });
+
+    const file = await ai.files.upload({
+      file: toBlob(base64ImageFile, mimeType || "image/jpeg"),
+      config: { mimeType: mimeType || "image/jpeg" },
     });
 
-    const data = await res.json();
-    const geminiResponse = data.candidates?.[0]?.content?.parts?.[0]?.text;
-    return NextResponse.json({ result: geminiResponse });
-  } catch (e) {
-    console.error(e);
-    return NextResponse.json({ message: 'Gemini処理失敗' }, { status: 500 });
+    if (!file?.uri || !file?.mimeType || !file?.name) {
+      throw new Error("ファイルのアップロードに失敗しました。");
+    }
+
+    const response = await ai.models.generateContent({
+      model: "gemini-2.0-flash",
+      contents: createUserContent([
+        createPartFromUri(file.uri, file.mimeType),
+        "レシートの内容を読み取ってください。",
+      ]),
+      config: {
+        responseMimeType: "application/json",
+        responseSchema: structuredOutputSetting,
+      },
+    });
+
+    await ai.files.delete({ name: file.name });
+
+    return Response.json({ result: response.text || "No result." });
+  } catch (error: unknown) {
+    console.error("Gemini API エラー:", error);
+    let errorMessage = "未知のエラー";
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    }
+    return new Response(JSON.stringify({ error: errorMessage }), {
+      status: 500,
+    });
   }
 }

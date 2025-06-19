@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useCallback, useEffect } from "react";
-import ReactCrop, { centerCrop, makeAspectCrop, Crop } from "react-image-crop";
+import ReactCrop, { Crop } from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
 import { HiCamera, HiLocationMarker, HiArrowRight, HiX } from "react-icons/hi";
 
@@ -16,6 +16,21 @@ export default function Receipts() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const imgRef = useRef<HTMLImageElement>(null);
+  const [geminiResult] = useState<string | null>(null);
+  type ReceiptItem = {
+    item_name: string;
+    item_price: number;
+    branch_name: string;
+  };
+
+  type ReceiptData = {
+    category: string;
+    shop_name: string;
+    total_price: number;
+    items: ReceiptItem[];
+  };
+
+  const [parsedReceipt, setParsedReceipt] = useState<ReceiptData | null>(null);
 
   // Start camera function
   const startCamera = useCallback(async () => {
@@ -77,7 +92,7 @@ export default function Receipts() {
   }, []);
 
   // Capture photo function
-  const capturePhoto = useCallback(() => {
+  const capturePhoto = useCallback(async () => {
     if (videoRef.current && canvasRef.current) {
       const video = videoRef.current;
       const canvas = canvasRef.current;
@@ -96,6 +111,40 @@ export default function Receipts() {
         setCapturedImage(imageDataUrl);
         setHasImage(true);
         stopCamera();
+
+        setCapturedImage(imageDataUrl);
+        setHasImage(true);
+        stopCamera();
+
+        // ここから
+        try {
+          const res = await fetch("/api/gemini", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              base64ImageFile: imageDataUrl,
+              mimeType: "image/jpeg",
+            }),
+          });
+
+          const data = await res.json();
+          console.log("Geminiからの返答（API経由）:", data);
+
+          // JSONパースして状態に保存
+          if (data?.result) {
+            try {
+              const parsed: ReceiptData = JSON.parse(data.result);
+              console.log("📄 パースされたレシート情報:", parsed);
+              setParsedReceipt(parsed);
+            } catch (err) {
+              console.error("❌ JSONパースエラー:", err);
+            }
+          } else {
+            console.warn("⚠️ Gemini APIから結果が返ってきませんでした:", data);
+          }
+        } catch (error) {
+          console.error("Gemini APIリクエストエラー:", error);
+        }
       }
     }
   }, [stopCamera]);
@@ -155,6 +204,41 @@ export default function Receipts() {
       stopCamera();
     };
   }, [stopCamera]);
+
+  const handleSaveReceipt = async () => {
+    if (!parsedReceipt) return;
+
+    try {
+      const res = await fetch("/api/receipts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          user_id: 1,
+          address: parsedReceipt.shop_name,
+          total_price: parsedReceipt.total_price,
+          items: parsedReceipt.items.map((item) => ({
+            item_name: item.item_name,
+            item_price: item.item_price,
+          })),
+        }),
+      });
+
+      const result = await res.json();
+
+      if (result.success) {
+        alert("✅ レシートを記録しました！");
+        // 必要ならリセット処理など
+        setCapturedImage(null);
+        setParsedReceipt(null);
+        setHasImage(false);
+      } else {
+        alert("❌ レシートの記録に失敗しました");
+      }
+    } catch (error) {
+      console.error("保存エラー:", error);
+      alert("❌ サーバーエラーが発生しました");
+    }
+  };
 
   return (
     <div className="flex flex-col gap-8 p-12 pb-24">
@@ -280,6 +364,11 @@ export default function Receipts() {
                   ) : (
                     <div className="text-4xl">🖼️</div>
                   )}
+                  {geminiResult && (
+                    <pre className="mt-4 p-2 bg-gray-100 text-sm rounded text-left w-full max-w-lg">
+                      {JSON.stringify(geminiResult, null, 2)}
+                    </pre>
+                  )}
                 </div>
                 <p className="text-sm text-gray-500 mb-4">
                   画像をクリックするとトリミングできます
@@ -301,56 +390,51 @@ export default function Receipts() {
         </div>
 
         {/* Right side: Receipt content */}
+        {/* Right side: Receipt content */}
         {hasImage && (
           <div className="flex-1">
             <div className="card min-h-[400px] flex flex-col">
               {!isEdit ? (
                 <>
-                  <div className="flex-1">
-                    <div className="flex items-center mb-4">
-                      <span className="w-3 h-3 bg-yellow-400 rounded-full mr-2"></span>
-                      <span className="font-bold">食費</span>
-                    </div>
-                    <div className="flex items-center text-gray-600 mb-2">
-                      <HiLocationMarker className="text-gray-500 mr-2" />
-                      <span>〇〇スーパー</span>
-                    </div>
+                  {/* カテゴリ */}
+                  <div className="flex items-center mb-4">
+                    <span className="w-3 h-3 bg-yellow-400 rounded-full mr-2"></span>
+                    <span className="font-bold">
+                      {parsedReceipt?.category || "食費"}
+                    </span>
+                  </div>
 
-                    <div className="">
-                      <div className="flex justify-between items-center py-4 border-b-1 border-solid border-lavender-light">
+                  {/* 店舗名 */}
+                  <div className="flex items-center text-gray-600 mb-2">
+                    <HiLocationMarker className="text-gray-500 mr-2" />
+                    <span>{parsedReceipt?.shop_name || "店舗名未取得"}</span>
+                  </div>
+
+                  {/* 商品一覧 */}
+                  <div>
+                    {parsedReceipt?.items?.map((item, idx) => (
+                      <div
+                        key={idx}
+                        className="flex justify-between items-center py-4 border-b border-solid border-lavender-light"
+                      >
                         <div>
-                          <div className="font-medium">スポーツドリンク</div>
-                          <div className="text-sm text-gray-500 flex items-center">
+                          <div className="font-medium">{item.item_name}</div>
+                          {/* <div className="text-sm text-gray-500 flex items-center">
                             <HiLocationMarker className="text-gray-500 mr-1" />
-                            〇〇コンビニ
-                          </div>
+                            {item.branch_name || "支店名なし"}
+                          </div> */}
                         </div>
-                        <div className="font-medium">240円</div>
+                        <div className="font-medium">{item.item_price}円</div>
                       </div>
-                      <div className="flex justify-between items-center py-4 border-b-1 border-solid border-lavender-light">
-                        <div>
-                          <div className="font-medium">ハンバーガー</div>
-                          <div className="text-sm text-gray-500 flex items-center">
-                            <HiLocationMarker className="text-gray-500 mr-1" />
-                            〇〇ファストフード
-                          </div>
-                        </div>
-                        <div className="font-medium">300円</div>
-                      </div>
-                      <div className="flex justify-between items-center py-4 border-b-1 border-solid border-lavender-light">
-                        <div>
-                          <div className="font-medium">ハンバーガー</div>
-                          <div className="text-sm text-gray-500 flex items-center">
-                            <HiLocationMarker className="text-gray-500 mr-1" />
-                            〇〇ファストフード
-                          </div>
-                        </div>
-                        <div className="font-medium">300円</div>
-                      </div>
+                    ))}
+
+                    {/* 合計 */}
+                    <div className="mt-4 text-right font-bold text-lg">
+                      合計: {parsedReceipt?.total_price?.toLocaleString()}円
                     </div>
                   </div>
 
-                  <div className="flex gap-4 mt-8">
+                  <div className="flex gap-4 mt-8" onClick={handleSaveReceipt}>
                     <button className="btn-primary flex-1">
                       レシートを記録する
                     </button>
