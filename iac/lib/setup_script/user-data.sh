@@ -12,6 +12,9 @@ sudo -u ec2-user bash -c "echo 'export PATH=\"\$HOME/.volta/bin:\$PATH\"' >> /ho
 # Node.js v22をVolta経由でインストール（直接パス指定）
 sudo -u ec2-user /home/ec2-user/.volta/bin/volta install node@22
 
+# AWS Secrets ManagerからGoogle GenAI API Keyを取得
+export GOOGLE_GENAI_API_KEY=$(aws secretsmanager get-secret-value --secret-id "dev-neko/google-genai-api-key" --region ap-northeast-1 --query SecretString --output text)
+
 # MariaDB 10.11のインストール
 yum install -y mariadb1011-server
 systemctl start mariadb
@@ -63,10 +66,16 @@ certbot --apache -d dev-neko.arctic-street.net --non-interactive --agree-tos --e
 # 証明書の自動更新設定
 # echo "0 12 * * * /usr/bin/certbot renew --quiet" | crontab -
 
+# server.jsをコピーして環境変数を設定
 sudo -u ec2-user cp /tmp/setup_script/server.js /home/ec2-user
 sudo -u ec2-user /home/ec2-user/.volta/bin/npm install -g npm@11.4.2
 sudo -u ec2-user /home/ec2-user/.volta/bin/npm install -g pm2
-sudo -u ec2-user -i /home/ec2-user/.volta/bin/pm2 start --name test-server /home/ec2-user/server.js
+
+# ec2-userの環境変数にGOOGLE_GENAI_API_KEYを設定
+sudo -u ec2-user bash -c "echo 'export GOOGLE_GENAI_API_KEY=\"$GOOGLE_GENAI_API_KEY\"' >> /home/ec2-user/.bashrc"
+
+# PM2でサーバーを起動（環境変数を引き継ぐ）
+sudo -u ec2-user bash -c "cd /home/ec2-user && GOOGLE_GENAI_API_KEY='$GOOGLE_GENAI_API_KEY' /home/ec2-user/.volta/bin/pm2 start --name test-server server.js"
 
 rm -f /etc/httpd/conf.d/dev-neko-le-ssl.conf /etc/httpd/conf.d/dev-neko.conf
 cp /tmp/setup_script/dev-neko-virtual.conf /etc/httpd/conf.d

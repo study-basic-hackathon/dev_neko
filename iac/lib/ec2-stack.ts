@@ -4,6 +4,7 @@ import * as route53 from 'aws-cdk-lib/aws-route53';
 import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as s3deploy from 'aws-cdk-lib/aws-s3-deployment';
 import * as iam from 'aws-cdk-lib/aws-iam';
+import * as secretsmanager from 'aws-cdk-lib/aws-secretsmanager';
 import { Construct } from 'constructs';
 import { v4 as uuidv4 } from 'uuid';
 import * as path from 'path';
@@ -28,8 +29,11 @@ export class Ec2Stack extends cdk.Stack {
     // S3バケットとスクリプトアップロードの作成
     const scriptBucket = this.createScriptBucket(uuid);
 
+    // AWS Secrets Managerの設定
+    const googleApiKeySecret = this.createGoogleApiKeySecret();
+
     // EC2インスタンスの作成
-    const instance = this.createEC2Instance(vpc, securityGroup, instanceName, scriptBucket);
+    const instance = this.createEC2Instance(vpc, securityGroup, instanceName, scriptBucket, googleApiKeySecret);
 
     // インスタンス起動時に実行するスクリプト
     this.configureUserData(instance, scriptBucket);
@@ -98,9 +102,24 @@ export class Ec2Stack extends cdk.Stack {
   }
 
   /**
+   * Google GenAI API KeyのSecretを作成する
+   */
+  private createGoogleApiKeySecret(): secretsmanager.Secret {
+    const googleApiKey = process.env.GOOGLE_GENAI_API_KEY || '';
+    
+    const secret = new secretsmanager.Secret(this, 'GoogleGenAIApiKey', {
+      secretName: 'dev-neko/google-genai-api-key',
+      description: 'Google Generative AI API Key for dev-neko project',
+      secretStringValue: cdk.SecretValue.unsafePlainText(googleApiKey),
+    });
+
+    return secret;
+  }
+
+  /**
    * EC2インスタンスを作成する
    */
-  private createEC2Instance(vpc: ec2.IVpc, securityGroup: ec2.SecurityGroup, instanceName: string, scriptBucket: s3.Bucket): ec2.Instance {
+  private createEC2Instance(vpc: ec2.IVpc, securityGroup: ec2.SecurityGroup, instanceName: string, scriptBucket: s3.Bucket, googleApiKeySecret: secretsmanager.Secret): ec2.Instance {
     // EC2インスタンスの作成
     const instance = new ec2.Instance(this, 'Instance', {
       vpc,
@@ -114,7 +133,7 @@ export class Ec2Stack extends cdk.Stack {
       machineImage: ec2.MachineImage.latestAmazonLinux2023(),
       securityGroup,
       keyName: process.env.KEY_PAIR_NAME || 'my-key-pair', // 既存のキーペア名を指定
-      role: this.createInstanceRole(scriptBucket),
+      role: this.createInstanceRole(scriptBucket, googleApiKeySecret),
     });
     
     // インスタンスに名前タグを追加
@@ -126,7 +145,7 @@ export class Ec2Stack extends cdk.Stack {
   /**
    * EC2インスタンス用のIAMロールを作成する
    */
-  private createInstanceRole(scriptBucket: s3.Bucket): iam.Role {
+  private createInstanceRole(scriptBucket: s3.Bucket, googleApiKeySecret: secretsmanager.Secret): iam.Role {
     const role = new iam.Role(this, 'InstanceRole', {
       assumedBy: new iam.ServicePrincipal('ec2.amazonaws.com'),
       managedPolicies: [
@@ -136,6 +155,9 @@ export class Ec2Stack extends cdk.Stack {
 
     // S3バケットからの読み取り権限を付与
     scriptBucket.grantRead(role);
+
+    // Secrets Managerからの読み取り権限を付与
+    googleApiKeySecret.grantRead(role);
 
     return role;
   }
