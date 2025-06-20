@@ -63,6 +63,11 @@ certbot --apache -d dev-neko.arctic-street.net --non-interactive --agree-tos --e
 # 証明書の自動更新設定
 # echo "0 12 * * * /usr/bin/certbot renew --quiet" | crontab -
 
+sudo -u ec2-user cp /tmp/setup_script/server.js /home/ec2-user
+sudo -u ec2-user /home/ec2-user/.volta/bin/npm install -g npm@11.4.2
+sudo -u ec2-user /home/ec2-user/.volta/bin/npm install -g pm2
+sudo -u ec2-user -i /home/ec2-user/.volta/bin/pm2 start --name test-server /home/ec2-user/server.js
+
 rm -f /etc/httpd/conf.d/dev-neko-le-ssl.conf /etc/httpd/conf.d/dev-neko.conf
 cp /tmp/setup_script/dev-neko-virtual.conf /etc/httpd/conf.d
 systemctl reload httpd
