@@ -2,7 +2,7 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary-500: #4F378B;
+  --color-primary-500: #4f378b;
   --color-primary-600: #3d3060;
   --color-text-black: #1f2937;
   --color-gray-50: #f9fafb;
@@ -13,7 +13,7 @@
   --color-gray-500: #6b7280;
   --color-gray-600: #4b5563;
   --color-lavender: #c7b8ea;
-  --color-lavender-light: #CAC4D0;
+  --color-lavender-light: #cac4d0;
 
   --font-family-sans: "Noto Sans JP", ui-sans-serif, system-ui, sans-serif;
 }
@@ -24,7 +24,7 @@ body {
 }
 
 button {
-  @apply cursor-pointer
+  @apply cursor-pointer;
 }
 
 .btn-primary {
@@ -36,7 +36,7 @@ button {
 }
 
 .btn-submit {
-  @apply bg-gray-600 text-white px-4 py-3.5 rounded-lg text-sm
+  @apply bg-gray-600 text-white px-4 py-3.5 rounded-lg text-sm;
 }
 
 .input-field {
@@ -50,7 +50,7 @@ button {
 .cat-silhouette {
   width: 120px;
   height: 120px;
-  background-image: url(../../public/cat_dummy.png);
+  background-image: url(../../public/default.png);
   background-size: 100%;
 }
 
