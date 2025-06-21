@@ -41,9 +41,10 @@ python3 -m venv /opt/certbot/
 ln -s /opt/certbot/bin/certbot /usr/bin/certbot
 
 # Apache設定ファイルの準備
-cat > /etc/httpd/conf.d/dev-neko.conf << 'EOF'
+DOMAIN_NAME="${SUBDOMAIN:-dev-neko}.arctic-street.net"
+cat > /etc/httpd/conf.d/dev-neko.conf << EOF
 <VirtualHost *:80>
-    ServerName dev-neko.arctic-street.net
+    ServerName ${DOMAIN_NAME}
     DocumentRoot /var/www/html
     ErrorLog /var/log/httpd/dev-neko_error.log
     CustomLog /var/log/httpd/dev-neko_access.log combined
@@ -61,7 +62,7 @@ echo "<html><body><h1>Hello from AWS CDK</h1><p>Node.js version: $(sudo -u ec2-u
 sleep 60
 
 # SSL証明書を取得
-certbot --apache -d dev-neko.arctic-street.net --non-interactive --agree-tos --email admin@arctic-street.net
+certbot --apache -d ${DOMAIN_NAME} --non-interactive --agree-tos --email admin@arctic-street.net
 
 # 証明書の自動更新設定
 # echo "0 12 * * * /usr/bin/certbot renew --quiet" | crontab -
@@ -84,5 +85,6 @@ sudo -u ec2-user bash -c "cd /home/ec2-user/dev_neko/code && /home/ec2-user/.vol
 sudo -u ec2-user bash -c "cd /home/ec2-user && GOOGLE_GENAI_API_KEY='$GOOGLE_GENAI_API_KEY' /home/ec2-user/.volta/bin/pm2 start --name test-server server.js"
 
 rm -f /etc/httpd/conf.d/dev-neko-le-ssl.conf /etc/httpd/conf.d/dev-neko.conf
-cp /tmp/setup_script/dev-neko-virtual.conf /etc/httpd/conf.d
+# プレースホルダーを実際のドメイン名に置換してコピー
+sed "s/DOMAIN_NAME_PLACEHOLDER/${DOMAIN_NAME}/g" /tmp/setup_script/dev-neko-virtual.conf > /etc/httpd/conf.d/dev-neko-virtual.conf
 systemctl reload httpd

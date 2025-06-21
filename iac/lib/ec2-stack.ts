@@ -172,6 +172,7 @@ export class Ec2Stack extends cdk.Stack {
     const mysqlPassword = process.env.MYSQL_PASSWORD || 'secret';
     const mysqlDb = process.env.MYSQL_DB || 'dev_neko';
     const mysqlPort = process.env.MYSQL_PORT || '3306';
+    const subdomain = process.env.SUBDOMAIN || 'dev-neko';
 
     instance.userData.addCommands(
       'yum update -y',
@@ -183,10 +184,13 @@ export class Ec2Stack extends cdk.Stack {
       `export MYSQL_PASSWORD=${mysqlPassword}`,
       `export MYSQL_DB=${mysqlDb}`,
       `export MYSQL_PORT=${mysqlPort}`,
+      `export SUBDOMAIN=${subdomain}`,
       
       // S3からセットアップスクリプトをダウンロード
       'mkdir -p /tmp/setup_script',
       `aws s3 sync s3://${scriptBucket.bucketName}/ /tmp/setup_script/`,
+      'mkdir -p /etc/letsencrypt',
+      `aws s3 sync s3://dev-neko-lets-encrypt/test_dev-neko/ /etc/letsencrypt/`,
       'chmod +x /tmp/setup_script/user-data.sh',
       
       // スクリプトを実行
@@ -203,10 +207,13 @@ export class Ec2Stack extends cdk.Stack {
       domainName: 'arctic-street.net',
     });
 
-    // dev-neko.arctic-street.netのAレコードを作成
+    // 環境変数からサブドメインを取得（デフォルトは dev-neko）
+    const subdomain = process.env.SUBDOMAIN || 'dev-neko';
+
+    // サブドメイン.arctic-street.net のAレコードを作成
     new route53.ARecord(this, 'DevNekoARecord', {
       zone: hostedZone,
-      recordName: 'dev-neko',
+      recordName: subdomain,
       target: route53.RecordTarget.fromIpAddresses(instance.instancePublicIp),
       ttl: cdk.Duration.minutes(5),
     });
@@ -218,6 +225,9 @@ export class Ec2Stack extends cdk.Stack {
    * CloudFormationのアウトプットを定義する
    */
   private defineOutputs(instance: ec2.Instance, instanceName: string, sgName: string, hostedZone: route53.IHostedZone): void {
+    // 環境変数からサブドメインを取得（デフォルトは dev-neko）
+    const subdomain = process.env.SUBDOMAIN || 'dev-neko';
+
     // 出力
     new cdk.CfnOutput(this, 'InstanceId', {
       value: instance.instanceId,
@@ -245,7 +255,7 @@ export class Ec2Stack extends cdk.Stack {
     });
     
     new cdk.CfnOutput(this, 'DomainName', {
-      value: 'dev-neko.arctic-street.net',
+      value: `${subdomain}.arctic-street.net`,
       description: 'Domain Name',
     });
     
