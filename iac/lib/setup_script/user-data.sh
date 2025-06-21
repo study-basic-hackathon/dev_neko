@@ -27,6 +27,10 @@ mysql -e "FLUSH PRIVILEGES;"
 
 # データベースを作成（環境変数から取得）
 mysql -e "CREATE DATABASE ${MYSQL_DB:-dev_neko};"
+sed -i 's/utf8mb4_0900_ai_ci/utf8mb4_general_ci/g' /tmp/setup_script/table_definitions.sql
+sed -i 's/utf8mb4_0900_ai_ci/utf8mb4_general_ci/g' /tmp/setup_script/seeding.sql
+mysql "${MYSQL_DB:-dev_neko}" < /tmp/setup_script/table_definitions.sql
+mysql "${MYSQL_DB:-dev_neko}" < /tmp/setup_script/seeding.sql
 
 # Apacheのインストール
 yum install -y httpd mod_ssl
