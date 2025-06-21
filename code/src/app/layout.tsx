@@ -6,6 +6,9 @@ import Layout from "@/components/common/Layout/Layout";
 export const metadata: Metadata = {
   title: "でぶ猫のための家計簿",
   description: "猫ちゃんの家計簿アプリ",
+  icons: {
+    icon: "/cat_dummy.png",
+  },
 };
 
 export default function RootLayout({

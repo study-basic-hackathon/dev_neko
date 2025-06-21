@@ -4,6 +4,7 @@ import * as route53 from 'aws-cdk-lib/aws-route53';
 import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as s3deploy from 'aws-cdk-lib/aws-s3-deployment';
 import * as iam from 'aws-cdk-lib/aws-iam';
+import * as secretsmanager from 'aws-cdk-lib/aws-secretsmanager';
 import { Construct } from 'constructs';
 import { v4 as uuidv4 } from 'uuid';
 import * as path from 'path';
@@ -28,8 +29,11 @@ export class Ec2Stack extends cdk.Stack {
     // S3バケットとスクリプトアップロードの作成
     const scriptBucket = this.createScriptBucket(uuid);
 
+    // AWS Secrets Managerの設定
+    const googleApiKeySecret = this.createGoogleApiKeySecret();
+
     // EC2インスタンスの作成
-    const instance = this.createEC2Instance(vpc, securityGroup, instanceName, scriptBucket);
+    const instance = this.createEC2Instance(vpc, securityGroup, instanceName, scriptBucket, googleApiKeySecret);
 
     // インスタンス起動時に実行するスクリプト
     this.configureUserData(instance, scriptBucket);
@@ -88,20 +92,34 @@ export class Ec2Stack extends cdk.Stack {
       autoDeleteObjects: true,
     });
 
-    // スクリプトファイルをS3にアップロード
+    // setup_scriptディレクトリのファイルをS3にアップロード
     new s3deploy.BucketDeployment(this, 'ScriptDeployment', {
-      sources: [s3deploy.Source.asset(path.join(__dirname))],
+      sources: [s3deploy.Source.asset(path.join(__dirname, 'setup_script'))],
       destinationBucket: bucket,
-      include: ['user-data.sh', 'dev-neko-virtual.conf'],
     });
 
     return bucket;
   }
 
   /**
+   * Google GenAI API KeyのSecretを作成する
+   */
+  private createGoogleApiKeySecret(): secretsmanager.Secret {
+    const googleApiKey = process.env.GOOGLE_GENAI_API_KEY || '';
+    
+    const secret = new secretsmanager.Secret(this, 'GoogleGenAIApiKey', {
+      secretName: 'dev-neko/google-genai-api-key',
+      description: 'Google Generative AI API Key for dev-neko project',
+      secretStringValue: cdk.SecretValue.unsafePlainText(googleApiKey),
+    });
+
+    return secret;
+  }
+
+  /**
    * EC2インスタンスを作成する
    */
-  private createEC2Instance(vpc: ec2.IVpc, securityGroup: ec2.SecurityGroup, instanceName: string, scriptBucket: s3.Bucket): ec2.Instance {
+  private createEC2Instance(vpc: ec2.IVpc, securityGroup: ec2.SecurityGroup, instanceName: string, scriptBucket: s3.Bucket, googleApiKeySecret: secretsmanager.Secret): ec2.Instance {
     // EC2インスタンスの作成
     const instance = new ec2.Instance(this, 'Instance', {
       vpc,
@@ -110,12 +128,12 @@ export class Ec2Stack extends cdk.Stack {
       },
       instanceType: ec2.InstanceType.of(
         ec2.InstanceClass.T2,
-        ec2.InstanceSize.MICRO
+        ec2.InstanceSize.SMALL
       ),
       machineImage: ec2.MachineImage.latestAmazonLinux2023(),
       securityGroup,
       keyName: process.env.KEY_PAIR_NAME || 'my-key-pair', // 既存のキーペア名を指定
-      role: this.createInstanceRole(scriptBucket),
+      role: this.createInstanceRole(scriptBucket, googleApiKeySecret),
     });
     
     // インスタンスに名前タグを追加
@@ -127,7 +145,7 @@ export class Ec2Stack extends cdk.Stack {
   /**
    * EC2インスタンス用のIAMロールを作成する
    */
-  private createInstanceRole(scriptBucket: s3.Bucket): iam.Role {
+  private createInstanceRole(scriptBucket: s3.Bucket, googleApiKeySecret: secretsmanager.Secret): iam.Role {
     const role = new iam.Role(this, 'InstanceRole', {
       assumedBy: new iam.ServicePrincipal('ec2.amazonaws.com'),
       managedPolicies: [
@@ -138,6 +156,9 @@ export class Ec2Stack extends cdk.Stack {
     // S3バケットからの読み取り権限を付与
     scriptBucket.grantRead(role);
 
+    // Secrets Managerからの読み取り権限を付与
+    googleApiKeySecret.grantRead(role);
+
     return role;
   }
 
@@ -146,25 +167,34 @@ export class Ec2Stack extends cdk.Stack {
    */
   private configureUserData(instance: ec2.Instance, scriptBucket: s3.Bucket): void {
     // 環境変数を設定
+    const mysqlHost = process.env.MYSQL_HOST || 'localhost';
     const mysqlUser = process.env.MYSQL_USER || 'noder';
     const mysqlPassword = process.env.MYSQL_PASSWORD || 'secret';
     const mysqlDb = process.env.MYSQL_DB || 'dev_neko';
+    const mysqlPort = process.env.MYSQL_PORT || '3306';
+    const subdomain = process.env.SUBDOMAIN || 'dev-neko';
 
     instance.userData.addCommands(
       'yum update -y',
       'yum install -y aws-cli',
       
       // 環境変数をエクスポート
+      `export MYSQL_HOST=${mysqlHost}`,
       `export MYSQL_USER=${mysqlUser}`,
       `export MYSQL_PASSWORD=${mysqlPassword}`,
       `export MYSQL_DB=${mysqlDb}`,
+      `export MYSQL_PORT=${mysqlPort}`,
+      `export SUBDOMAIN=${subdomain}`,
       
-      // S3からスクリプトをダウンロード
-      `aws s3 cp s3://${scriptBucket.bucketName}/user-data.sh /tmp/user-data.sh`,
-      'chmod +x /tmp/user-data.sh',
+      // S3からセットアップスクリプトをダウンロード
+      'mkdir -p /tmp/setup_script',
+      `aws s3 sync s3://${scriptBucket.bucketName}/ /tmp/setup_script/`,
+      'mkdir -p /etc/letsencrypt',
+      `aws s3 sync s3://dev-neko-lets-encrypt/test_dev-neko/ /etc/letsencrypt/`,
+      'chmod +x /tmp/setup_script/user-data.sh',
       
       // スクリプトを実行
-      '/tmp/user-data.sh'
+      '/tmp/setup_script/user-data.sh'
     );
   }
 
@@ -177,10 +207,13 @@ export class Ec2Stack extends cdk.Stack {
       domainName: 'arctic-street.net',
     });
 
-    // dev-neko.arctic-street.netのAレコードを作成
+    // 環境変数からサブドメインを取得（デフォルトは dev-neko）
+    const subdomain = process.env.SUBDOMAIN || 'dev-neko';
+
+    // サブドメイン.arctic-street.net のAレコードを作成
     new route53.ARecord(this, 'DevNekoARecord', {
       zone: hostedZone,
-      recordName: 'dev-neko',
+      recordName: subdomain,
       target: route53.RecordTarget.fromIpAddresses(instance.instancePublicIp),
       ttl: cdk.Duration.minutes(5),
     });
@@ -192,6 +225,9 @@ export class Ec2Stack extends cdk.Stack {
    * CloudFormationのアウトプットを定義する
    */
   private defineOutputs(instance: ec2.Instance, instanceName: string, sgName: string, hostedZone: route53.IHostedZone): void {
+    // 環境変数からサブドメインを取得（デフォルトは dev-neko）
+    const subdomain = process.env.SUBDOMAIN || 'dev-neko';
+
     // 出力
     new cdk.CfnOutput(this, 'InstanceId', {
       value: instance.instanceId,
@@ -219,7 +255,7 @@ export class Ec2Stack extends cdk.Stack {
     });
     
     new cdk.CfnOutput(this, 'DomainName', {
-      value: 'dev-neko.arctic-street.net',
+      value: `${subdomain}.arctic-street.net`,
       description: 'Domain Name',
     });
     

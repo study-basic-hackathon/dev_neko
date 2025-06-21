@@ -36,7 +36,7 @@ export async function POST(req: Request) {
       model: "gemini-2.0-flash",
       contents: createUserContent([
         createPartFromUri(file.uri, file.mimeType),
-        "レシートの内容を読み取ってください。",
+        "レシートの内容を読み取ってください。 カテゴリーは「日用品」「交際費」「趣味」「食費」のいずれかで分類してください。レシートの内容はJSON形式で返してください。",
       ]),
       config: {
         responseMimeType: "application/json",

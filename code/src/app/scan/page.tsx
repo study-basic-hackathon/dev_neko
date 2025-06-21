@@ -20,14 +20,15 @@ export default function Receipts() {
   type ReceiptItem = {
     item_name: string;
     item_price: number;
-    branch_name: string;
+    item_category: string;
   };
 
   type ReceiptData = {
-    category: string;
     shop_name: string;
     total_price: number;
     items: ReceiptItem[];
+    category: string;
+    branch_name: string;
   };
 
   const [parsedReceipt, setParsedReceipt] = useState<ReceiptData | null>(null);
@@ -216,9 +217,11 @@ export default function Receipts() {
           user_id: 1,
           address: parsedReceipt.shop_name,
           total_price: parsedReceipt.total_price,
+          category: parsedReceipt.category,
           items: parsedReceipt.items.map((item) => ({
             item_name: item.item_name,
             item_price: item.item_price,
+            item_category: item.item_category,
           })),
         }),
       });
@@ -232,10 +235,15 @@ export default function Receipts() {
         setParsedReceipt(null);
         setHasImage(false);
       } else {
+        console.error("❌ APIエラー内容:", result.error);
         alert("❌ レシートの記録に失敗しました");
       }
-    } catch (error) {
-      console.error("保存エラー:", error);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error("❌ 保存エラー:", error.message);
+      } else {
+        console.error("❌ 保存エラー（unknown型）:", error);
+      }
       alert("❌ サーバーエラーが発生しました");
     }
   };
@@ -398,9 +406,9 @@ export default function Receipts() {
                 <>
                   {/* カテゴリ */}
                   <div className="flex items-center mb-4">
-                    <span className="w-3 h-3 bg-yellow-400 rounded-full mr-2"></span>
+                    <span className="w-3 h-3 bg-black rounded-full mr-2"></span>
                     <span className="font-bold">
-                      {parsedReceipt?.category || "食費"}
+                      {parsedReceipt?.category || "カテゴリー未取得"}
                     </span>
                   </div>
 
@@ -419,10 +427,10 @@ export default function Receipts() {
                       >
                         <div>
                           <div className="font-medium">{item.item_name}</div>
-                          {/* <div className="text-sm text-gray-500 flex items-center">
+                          <div className="text-sm text-gray-500 flex items-center">
                             <HiLocationMarker className="text-gray-500 mr-1" />
-                            {item.branch_name || "支店名なし"}
-                          </div> */}
+                            {parsedReceipt?.branch_name || "支店名なし"}
+                          </div>
                         </div>
                         <div className="font-medium">{item.item_price}円</div>
                       </div>
