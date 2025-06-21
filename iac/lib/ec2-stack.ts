@@ -167,18 +167,22 @@ export class Ec2Stack extends cdk.Stack {
    */
   private configureUserData(instance: ec2.Instance, scriptBucket: s3.Bucket): void {
     // 環境変数を設定
+    const mysqlHost = process.env.MYSQL_HOST || 'localhost';
     const mysqlUser = process.env.MYSQL_USER || 'noder';
     const mysqlPassword = process.env.MYSQL_PASSWORD || 'secret';
     const mysqlDb = process.env.MYSQL_DB || 'dev_neko';
+    const mysqlPort = process.env.MYSQL_PORT || '3306';
 
     instance.userData.addCommands(
       'yum update -y',
       'yum install -y aws-cli',
       
       // 環境変数をエクスポート
+      `export MYSQL_HOST=${mysqlHost}`,
       `export MYSQL_USER=${mysqlUser}`,
       `export MYSQL_PASSWORD=${mysqlPassword}`,
       `export MYSQL_DB=${mysqlDb}`,
+      `export MYSQL_PORT=${mysqlPort}`,
       
       // S3からセットアップスクリプトをダウンロード
       'mkdir -p /tmp/setup_script',
