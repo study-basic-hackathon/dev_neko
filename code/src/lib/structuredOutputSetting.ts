@@ -3,11 +3,17 @@ import { Type } from "@google/genai";
 export const structuredOutputSetting = {
   type: Type.OBJECT,
   properties: {
+    category: {
+      type: Type.STRING,
+    },
     shop_name: {
       type: Type.STRING,
     },
     branch_name: {
       type: Type.STRING,
+    },
+    total_price: {
+      type: Type.NUMBER,
     },
     items: {
       type: Type.ARRAY,
@@ -27,9 +33,6 @@ export const structuredOutputSetting = {
         required: ["item_name", "item_price", "item_category"],
       },
     },
-    total_price: {
-      type: Type.NUMBER,
-    },
   },
-  required: ["shop_name", "total_price"],
+  required: ["shop_name", "total_price", "category"],
 };

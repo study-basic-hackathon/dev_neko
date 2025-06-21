@@ -12,7 +12,7 @@ export type ExpenseCategory = {
 
 // デフォルトのカテゴリーデータ
 export const defaultCategories: ExpenseCategory[] = [
-  { id: "1", name: "家賃", amount: 0, color: "#4169e1" },
+  { id: "1", name: "日用品", amount: 0, color: "#4169e1" },
   { id: "2", name: "交際費", amount: 0, color: "#f5a9a9" },
   { id: "3", name: "趣味", amount: 0, color: "#f5a142" },
   { id: "4", name: "食費", amount: 0, color: "#f5d742" },
