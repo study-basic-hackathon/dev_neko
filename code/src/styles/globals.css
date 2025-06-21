@@ -47,12 +47,12 @@ button {
   @apply bg-white rounded-lg border border-gray-200 p-6;
 }
 
-.cat-silhouette {
+/* .cat-silhouette {
   width: 120px;
   height: 120px;
   background-image: url(../../public/default.png);
   background-size: 100%;
-}
+} */
 
 .speech-bubble {
   @apply bg-white rounded-lg shadow-md px-4 py-3 relative;

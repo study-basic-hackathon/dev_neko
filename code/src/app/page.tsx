@@ -68,10 +68,17 @@ export default function Home() {
       <div className="bg-lavender-light py-16 px-8">
         <div className="max-w-4xl mx-auto flex flex-col items-center">
           <div className="flex items-center gap-8">
-            <div
-              className="cat-silhouette"
-              style={{ width: "200px", height: "200px" }}
-            ></div>
+            <img
+              src={
+                totalPrice >= 10000
+                  ? "/cat2.png"
+                  : totalPrice >= 5000
+                  ? "/cat1.png"
+                  : "/default.png"
+              }
+              alt="猫の画像"
+              className="w-[200px] h-[200px] object-contain"
+            />
             <div className="text-left">
               <h2 className="text-2xl font-bold mb-2">
                 {catName ? catName : "名前なし"}
