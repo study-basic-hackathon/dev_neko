@@ -2,7 +2,6 @@
 
 import {
   HiLocationMarker,
-  HiArrowRight,
   HiChevronLeft,
   HiChevronRight,
 } from "react-icons/hi";
