@@ -45,3 +45,5 @@ UNLOCK TABLES;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2025-06-01 12:24:47
+
+insert into cats (id, user_id, cat_name, weight, accessed_at, created_at, updated_at) value (1, 1, 'たろう', 10.55, now(), now(),now());

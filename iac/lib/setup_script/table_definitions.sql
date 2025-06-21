@@ -160,3 +160,6 @@ CREATE TABLE `users` (
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2025-06-21 15:42:55
+
+ALTER TABLE receipts ADD COLUMN IF NOT EXISTS category VARCHAR(255);
+ALTER TABLE receipt_items ADD COLUMN item_category VARCHAR(255);
