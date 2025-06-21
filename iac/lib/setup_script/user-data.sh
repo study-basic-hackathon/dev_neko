@@ -73,7 +73,7 @@ certbot --apache -d ${DOMAIN_NAME} --non-interactive --agree-tos --email admin@a
 
 # server.jsをコピーして環境変数を設定
 sudo -u ec2-user cp /tmp/setup_script/server.js /home/ec2-user
-sudo -u ec2-user /home/ec2-user/.volta/bin/npm install -g npm@11.4.2
+# sudo -u ec2-user /home/ec2-user/.volta/bin/npm install -g npm@11.4.2
 sudo -u ec2-user /home/ec2-user/.volta/bin/npm install -g pm2
 
 # ec2-userの環境変数にGOOGLE_GENAI_API_KEYを設定
@@ -82,11 +82,12 @@ sudo -u ec2-user bash -c "echo 'export GOOGLE_GENAI_API_KEY=\"$GOOGLE_GENAI_API_
 yum install -y git
 sudo -u ec2-user git clone https://github.com/study-basic-hackathon/dev_neko.git /home/ec2-user/dev_neko
 
-# /home/ec2-user/dev_neko/code内でnpm ci --omit=devを実行
+# /home/ec2-user/dev_neko/code内でnpm install && npm run buildを実行
 sudo -u ec2-user bash -c "cd /home/ec2-user/dev_neko/code && /home/ec2-user/.volta/bin/npm install && /home/ec2-user/.volta/bin/npm run build"
+sudo -u ec2-user bash -c "cd /home/ec2-user/dev_neko/code && GOOGLE_GENAI_API_KEY='$GOOGLE_GENAI_API_KEY' /home/ec2-user/.volta/bin/pm2 start npm --name server -- start"
 
 # PM2でサーバーを起動（環境変数を引き継ぐ）
-sudo -u ec2-user bash -c "cd /home/ec2-user && GOOGLE_GENAI_API_KEY='$GOOGLE_GENAI_API_KEY' /home/ec2-user/.volta/bin/pm2 start --name test-server server.js"
+# sudo -u ec2-user bash -c "cd /home/ec2-user && GOOGLE_GENAI_API_KEY='$GOOGLE_GENAI_API_KEY' /home/ec2-user/.volta/bin/pm2 start --name test-server server.js"
 
 rm -f /etc/httpd/conf.d/dev-neko-le-ssl.conf /etc/httpd/conf.d/dev-neko.conf
 # プレースホルダーを実際のドメイン名に置換してコピー
