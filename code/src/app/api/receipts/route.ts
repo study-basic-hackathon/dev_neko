@@ -32,8 +32,8 @@ export async function POST(req: Request) {
   try {
     // 1. レシート本体を保存
     const [receiptResult] = await db.execute<ResultSetHeader>(
-      `INSERT INTO receipts (user_id, adress, total_price, category, issued_at, created_at, updated_at)
-      VALUES (?, ?, ?, ?, NOW(), NOW(), NOW())`,
+      `INSERT INTO receipts (user_id, adress, total_price, category, issued_at)
+      VALUES (?, ?, ?, ?, NOW())`,
       [user_id, address, total_price, category]
     );
 
