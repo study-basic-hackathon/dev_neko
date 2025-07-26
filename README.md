@@ -41,3 +41,8 @@ DB コンテナの中に入ってから
 cd mysql_init_data
 mysql -u root -p dev_neko < dump.sql
 (パスワードを聞かれるから secret と入力)
+
+なぜ DB に繋がらなかったのか？
+ローカルの方の mysql と docker 上の mysql 競合していたから（docker 入らないで mysql コマンドを実行してしまった）
+port3306 だと両方に該当してしまう（mysql の習性上、localhost だと PC 上の mysql を探しに行ってしまう）
+なので 127.0.0.1 にしないとダメ
