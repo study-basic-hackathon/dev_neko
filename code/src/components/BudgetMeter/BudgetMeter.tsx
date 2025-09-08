@@ -9,8 +9,8 @@ interface BudgetMeterProps {
 }
 
 export const BudgetMeter: React.FC<BudgetMeterProps> = ({
-  budget = 60000,
-  spent = 15683,
+  budget = 100000,
+  spent = 10000,
   size = 220,
 }) => {
   const safeBudget = typeof budget === "number" && budget > 0 ? budget : 1;
